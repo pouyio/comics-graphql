@@ -7,7 +7,7 @@ const resolvers = require('./resolvers');
 const typeDefs = `
 type Query {
   comic(_id: String!): Comic
-  comics(search: String, limit: Int, byUser: Boolean): [Comic],
+  comics(search: String, limit: Int): [Comic],
 }
 
 type Issue {
