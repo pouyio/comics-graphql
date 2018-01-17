@@ -22,6 +22,35 @@ const resolvers = {
         }
     },
 
+    Mutation: {
+        markComicWish: async (root, { _id, wish }, { user }) => {
+
+            const comicExists = await db.users.findAsCursor({ _id: user, 'comics._id': _id }).count()
+            let match = { _id: user };
+            let update = {};
+
+            if (comicExists) {
+                match['comics._id'] = _id;
+                update['$set'] = { 'comics.$.wish': wish };
+            } else {
+                update['$push'] = { 'comics': { _id, wish } };
+            }
+
+            await db.users.update(match, update);
+            return db.comics.findOne({ _id })
+        },
+        markIssueRead: (root, {_id, issue, isRead }, { user }) => {
+            // TODO
+            console.log(_id, issue, isRead);
+            return db.comics.findOne({ _id })
+        },
+        markIssuePage: (root, {_id, issue, page }, { user }) => {
+            // TODO
+            console.log(_id, issue, isRead);
+            return db.comics.findOne({ _id })
+        }
+    },
+
     Issue: {
         pages: (root) => root.pages || []
     },

@@ -6,8 +6,14 @@ const resolvers = require('./resolvers');
 
 const typeDefs = `
 type Query {
-  comic(_id: String!): Comic
-  comics(search: String, limit: Int): [Comic],
+  comic(_id: String!): Comic,
+  comics(search: String, limit: Int): [Comic]
+}
+
+type Mutation {
+  markComicWish (_id: String!, wish: Boolean!): Comic,
+  markIssueRead (_id: String!, issue: String!, isRead: Boolean!): Comic,
+  markIssuePage (_id: String!, issue: String!, page: Int!): Comic,
 }
 
 type Issue {
