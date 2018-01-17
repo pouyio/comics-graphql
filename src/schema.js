@@ -12,8 +12,7 @@ type Query {
 
 type Mutation {
   markComicWish (_id: String!, wish: Boolean!): Comic,
-  markIssueRead (_id: String!, issue: String!, isRead: Boolean!): Comic,
-  markIssuePage (_id: String!, issue: String!, page: Int!): Comic,
+  updateIssue (_id: String!, issue: String!, isRead: Boolean, page: Int): Comic
 }
 
 type Issue {

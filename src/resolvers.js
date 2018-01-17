@@ -1,6 +1,29 @@
 const mongoist = require('mongoist');
 const db = mongoist(process.env.MONGO_URL);
 
+const _ensureIssueExists = async (comic, issue, user) => {
+    const hasComic = await db.users.findAsCursor({ _id: user, 'comics._id': comic }).count();
+
+    if (!hasComic) {
+        return await db.users.update({ _id: user },
+            { $push: { comics: { _id: comic, wish: false, [issue]: { page: 0, read: false } } } });
+    }
+
+    const aggregation = [];
+    aggregation.push({ $match: { _id: user } });
+    aggregation.push({ $unwind: '$comics' });
+    aggregation.push({ $match: { 'comics._id': comic } });
+    aggregation.push({ $replaceRoot: { newRoot: "$comics" } });
+    aggregation.push({ $match: { [issue]: { $exists: true } } });
+
+    const hasIssue = await db.users.aggregate(aggregation);
+
+    if (!hasIssue.length) {
+        return await db.users.update({ _id: user, 'comics._id': comic }, { $set: { [`comics.$.${issue}`]: { page: 0, read: false } } });
+    }
+    return;
+}
+
 const resolvers = {
     Query: {
 
@@ -39,14 +62,14 @@ const resolvers = {
             await db.users.update(match, update);
             return db.comics.findOne({ _id })
         },
-        markIssueRead: (root, {_id, issue, isRead }, { user }) => {
-            // TODO
-            console.log(_id, issue, isRead);
-            return db.comics.findOne({ _id })
-        },
-        markIssuePage: (root, {_id, issue, page }, { user }) => {
-            // TODO
-            console.log(_id, issue, isRead);
+        updateIssue: async (root, { _id, issue, isRead, page }, { user }) => {
+            const $set = {};
+            if (isRead !== undefined) $set[`comics.$.${issue}.read`] = isRead;
+            if (page !== undefined) $set[`comics.$.${issue}.page`] = page;
+            await _ensureIssueExists(_id, issue, user);
+            await db.users.update(
+                { _id: user, 'comics._id': _id },
+                { $set });
             return db.comics.findOne({ _id })
         }
     },
