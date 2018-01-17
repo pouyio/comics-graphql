@@ -85,6 +85,18 @@ const comicWishForUser = async (user, _id) => {
     return result.length ? result[0].wish : false;
 }
 
+const comicsByUser = async (user) => {
+    const comicsIds = await db.users.aggregate([
+        { $match: { _id: user } },
+        { $unwind: '$comics' },
+        { $match: { 'comics.wish': true } },
+        { $replaceRoot: { newRoot: "$comics" } },
+        { $project: { _id: 1 } }
+    ]);
+
+    return comicsIds.map(async comic => await findComic(comic._id))
+}
+
 module.exports = {
     findComic,
     findUserComic,
@@ -92,5 +104,6 @@ module.exports = {
     randomComics,
     updateComicWish,
     updateIssueForUser,
-    comicWishForUser
+    comicWishForUser,
+    comicsByUser
 }

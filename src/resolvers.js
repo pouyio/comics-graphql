@@ -5,7 +5,9 @@ const resolvers = {
 
         comic: (root, { _id }) => data.findComic(_id),
 
-        comics: async (root, { search, limit = 10 }) => {
+        comics: async (root, { search, wish, limit = 10 }, { user }) => {
+
+            if (wish) return data.comicsByUser(user);
 
             return search
                 ? data.searchComics(search, limit)
