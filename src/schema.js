@@ -19,6 +19,7 @@ type Issue {
   number: Int,
   pages: [String],
   page: Int,
+  percentage: Int,
   read: Boolean
 }
 

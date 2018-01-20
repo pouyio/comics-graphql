@@ -34,7 +34,8 @@ const resolvers = {
     Issue: {
         pages: (root) => root.pages || [],
         read: (root) => root.read || false,
-        page: (root) => root.page || 0
+        page: (root) => root.page || 0,
+        percentage: (root) => (Math.floor((root.pages || []).length - (root.page || 0) / (root.pages || []).length) || 0)
     },
 
     Comic: {
