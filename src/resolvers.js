@@ -39,17 +39,18 @@ const resolvers = {
     },
 
     Comic: {
-        issues: async (root, { number = false }, { user }) => {
+        issues: async (root, { id, number = false }, { user }) => {
 
             const userComicInfo = await data.findUserComic(root._id, user);
 
             const userIssuesIds = Object.keys(userComicInfo).filter(k => k !== '_id' && k !== 'wish');
 
-            const issuesByNumber = number
-                ? root.issues.filter(i => i.number === number) || root.issues
-                : root.issues;
+            let issuesFiltered = root.issues;
+            
+            if (id) issuesFiltered = issuesFiltered.filter(i => i.id === id) || issuesFiltered;
+            if (number) issuesFiltered = issuesFiltered.filter(i => i.number === id) || issuesFiltered;
 
-            return issuesByNumber.map(issue => {
+            return issuesFiltered.map(issue => {
                 const userIssueId = userIssuesIds.find(issueId => issueId === issue.id);
                 return { ...issue, ...userComicInfo[userIssueId] };
             })

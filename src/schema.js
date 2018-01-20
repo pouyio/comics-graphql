@@ -42,7 +42,7 @@ type Comic {
   summary: String,
   cover: String,
   wish: Boolean,
-  issues (number: Int): [Issue],
+  issues (id: String, number: Int): [Issue],
   artists: [Person],
   writers: [Person],
   genres: [EntityDetail],
