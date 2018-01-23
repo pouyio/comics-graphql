@@ -35,7 +35,11 @@ const resolvers = {
         pages: (root) => root.pages || [],
         read: (root) => root.read || false,
         page: (root) => root.page || 0,
-        percentage: (root) => (Math.floor((root.pages || []).length - (root.page || 0) / (root.pages || []).length) || 0)
+        percentage: (root) => {
+            const pages = (root.pages || []).length;
+            const page = root.page || 0;
+            return Math.floor((pages - (pages - page))*100 / pages);
+        }
     },
 
     Comic: {
