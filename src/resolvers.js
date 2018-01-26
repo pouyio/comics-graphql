@@ -38,7 +38,7 @@ const resolvers = {
         percentage: (root) => {
             const pages = (root.pages || []).length;
             const page = root.page || 0;
-            return Math.floor((pages - (pages - page))*100 / pages);
+            return Math.floor((pages - (pages - page)) * 100 / pages);
         }
     },
 
@@ -50,7 +50,7 @@ const resolvers = {
             const userIssuesIds = Object.keys(userComicInfo).filter(k => k !== '_id' && k !== 'wish');
 
             let issuesFiltered = root.issues;
-            
+
             if (id) issuesFiltered = issuesFiltered.filter(i => i.id === id) || issuesFiltered;
             if (number) issuesFiltered = issuesFiltered.filter(i => i.number === id) || issuesFiltered;
 
@@ -60,7 +60,11 @@ const resolvers = {
             })
         },
 
-        wish: (root, { }, { user }) => data.comicWishForUser(user, root._id)
+        wish: (root, { }, { user }) => data.comicWishForUser(user, root._id),
+
+        cover: (root) => (root.cover.indexOf('/img/') === 0)
+                ? `${process.env.API_URL}${root.cover}`
+                : root.cover
     }
 
 
