@@ -1,14 +1,34 @@
 require('dotenv').load();
 const express = require('express');
-const graphqlHTTP = require('express-graphql');
+const cors = require('./src/cors');
+const bodyParser = require('body-parser');
 const schema = require('./src/schema');
+const { graphqlExpress } = require('apollo-server-express');
+const { check_token, login } = require('./src/auth');
+const { makeRequest } = require('./src/source');
 
 const app = express();
 
-app.use('/', graphqlHTTP({
-  schema,
-  graphiql: true
-}));
+app.use(cors);
 
-app.listen(process.env.PORT);
-console.log('GraphQL API server running at port: '+ process.env.PORT);
+app.use(bodyParser.json());
+
+app.post('/login', login);
+
+app.get('/img/*', async (req, res) => {
+    const url = `${process.env.SOURCE_URL}${req.params['0']}`;
+    try {
+        const { body, type } = await makeRequest(url);
+        res.header('Content-Type', type);
+        res.send(body);
+    } catch (err) {
+        console.log(err);
+        res.end();
+    }
+})
+
+app.use(check_token);
+
+app.use('/graphql', graphqlExpress((req) => ({ schema, context: { user: req.user } })));
+
+app.listen(process.env.PORT, () => console.log(`GraphiQL is running on port ${process.env.PORT}`));
