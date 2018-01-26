@@ -20,6 +20,23 @@ const make_request = url => new Promise((resolve, reject) => {
   });
 });
 
+const issue = (body) => {
+  const data = [];
+
+  const lines = body.split('\n');
+
+  for (var line of lines) {
+    var match = line.match(/lstImages\.push\(["'](.*?)["']\);/i);
+
+    if (!!match) {
+      data.push(match[1]);
+    }
+  };
+
+  return Promise.resolve(data);
+};
+
 Object.assign(module.exports, {
-  makeRequest: make_request
+  makeRequest: make_request,
+  issue
 })

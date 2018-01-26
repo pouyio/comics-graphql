@@ -97,6 +97,10 @@ const comicsByUser = async (user) => {
     return comicsIds.map(async comic => await findComic(comic._id))
 }
 
+const setPages = async (comic, issue, pages) => {
+    db.comics.update({ _id: comic, 'issues.id': issue }, { $set: { 'issues.$.pages': pages } });
+}
+
 module.exports = {
     findComic,
     findUserComic,
@@ -105,5 +109,6 @@ module.exports = {
     updateComicWish,
     updateIssueForUser,
     comicWishForUser,
-    comicsByUser
+    comicsByUser,
+    setPages
 }

@@ -1,4 +1,5 @@
 const data = require('./data');
+const sourceServer = require('./source');
 
 const resolvers = {
     Query: {
@@ -32,7 +33,22 @@ const resolvers = {
     },
 
     Issue: {
-        pages: (root) => root.pages || [],
+        pages: async (root) => {
+
+            if (root.pages) return root.pages;
+
+            const url = `${process.env.SOURCE_URL}Comic/${root.comicId}/${root.id}?readType=1&quality=hq`;
+
+            try {
+                const { body } = await sourceServer.makeRequest(url);
+                const pages = await sourceServer.issue(body);
+                data.setPages(root.comicId, root.id, pages);
+                return pages;
+            } catch (e) {
+                console.log(e);
+                return [];
+            }
+        },
         read: (root) => root.read || false,
         page: (root) => root.page || 0,
         percentage: (root) => {
@@ -56,15 +72,15 @@ const resolvers = {
 
             return issuesFiltered.map(issue => {
                 const userIssueId = userIssuesIds.find(issueId => issueId === issue.id);
-                return { ...issue, ...userComicInfo[userIssueId] };
+                return { ...issue, ...userComicInfo[userIssueId], comicId: root._id };
             })
         },
 
         wish: (root, { }, { user }) => data.comicWishForUser(user, root._id),
 
         cover: (root) => (root.cover.indexOf('/img/') === 0)
-                ? `${process.env.API_URL}${root.cover}`
-                : root.cover
+            ? `${process.env.API_URL}${root.cover}`
+            : root.cover
     }
 
 
