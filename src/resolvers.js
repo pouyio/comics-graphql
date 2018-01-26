@@ -38,7 +38,7 @@ const resolvers = {
         percentage: (root) => {
             const pages = (root.pages || []).length;
             const page = root.page || 0;
-            return Math.floor((pages - (pages - page)) * 100 / pages);
+            return Math.floor((pages - (pages - page)) * 100 / (pages + 0.0001));
         }
     },
 
