@@ -1,4 +1,6 @@
 require('dotenv').load();
+const fs = require('fs');
+const https = require('https');
 const express = require('express');
 const cors = require('./src/cors');
 const bodyParser = require('body-parser');
@@ -31,4 +33,17 @@ app.use(check_token);
 
 app.use('/graphql', graphqlExpress((req) => ({ schema, context: { user: req.user } })));
 
-app.listen(process.env.PORT, () => console.log(`GraphiQL is running on port ${process.env.PORT}`));
+if (process.env.NODE_ENV === 'production') {
+    const options = {
+        key: fs.readFileSync('/etc/letsencrypt/live/comic/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/comic/fullchain.pem')
+    }
+    https
+        .createServer(options || {}, app)
+        .listen(process.env.PORT, () => console.log('Comics-api listenin on port ' + process.env.PORT));
+} else {
+
+    require('http')
+        .createServer(app)
+        .listen(process.env.PORT, () => console.log('Comics-api listenin on port ' + process.env.PORT));
+}
