@@ -6,7 +6,7 @@ const resolvers = {
 
         comic: (root, { _id }) => data.findComic(_id),
 
-        comics: async (root, { search, wish, limit = 10 }, { user }) => {
+        comics: (root, { search, wish, limit = 10 }, { user }) => {
 
             if (wish) return data.comicsByUser(user);
 
@@ -36,6 +36,8 @@ const resolvers = {
         pages: async (root) => {
 
             if (root.pages) return root.pages;
+
+            if (!root.scrape) return [];
 
             const url = `${process.env.SOURCE_URL}Comic/${root.comicId}/${root.id}?readType=1&quality=hq`;
 
@@ -68,11 +70,11 @@ const resolvers = {
             let issuesFiltered = root.issues;
 
             if (id) issuesFiltered = issuesFiltered.filter(i => i.id === id) || issuesFiltered;
-            if (number) issuesFiltered = issuesFiltered.filter(i => i.number === id) || issuesFiltered;
+            if (number) issuesFiltered = issuesFiltered.filter(i => i.number === number) || issuesFiltered;
 
             return issuesFiltered.map(issue => {
                 const userIssueId = userIssuesIds.find(issueId => issueId === issue.id);
-                return { ...issue, ...userComicInfo[userIssueId], comicId: root._id };
+                return { ...issue, ...userComicInfo[userIssueId], comicId: root._id, scrape: (id || number) };
             })
         },
 
