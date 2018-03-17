@@ -38,8 +38,8 @@ const findUserComic = async (_id, user) => {
 
 const searchComics = (search, limit) => db.comics
     .findAsCursor(
-    { $text: { $search: search } },
-    { score: { $meta: "textScore" } })
+        { $text: { $search: search } },
+        { score: { $meta: "textScore" } })
     .sort({ score: { $meta: "textScore" } })
     .limit(limit)
     .toArray();
@@ -101,6 +101,20 @@ const setPages = async (comic, issue, pages) => {
     db.comics.update({ _id: comic, 'issues.id': issue }, { $set: { 'issues.$.pages': pages } });
 }
 
+const retrieveEntitiDetails = (entity) => db.comics.distinct(entity);
+
+const retrievePersons = (person) => db.comics.distinct(person);
+
+const retrieveIssues = () => db.comics.aggregate([
+    { $match: { issues: { $type: 3 } } },
+    { $project: { issues: { '$size': '$issues' } } },
+    { $group: { _id: null, count: { $sum: '$issues' } } }
+]);
+
+const retrieveInfo = () => ({});
+
+const retrieveComicsByStatus = (status) => db.comics.count({status});
+
 module.exports = {
     findComic,
     findUserComic,
@@ -110,5 +124,10 @@ module.exports = {
     updateIssueForUser,
     comicWishForUser,
     comicsByUser,
-    setPages
+    setPages,
+    retrieveInfo,
+    retrieveEntitiDetails,
+    retrievePersons,
+    retrieveIssues,
+    retrieveComicsByStatus
 }

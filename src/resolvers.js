@@ -14,7 +14,17 @@ const resolvers = {
                 ? data.searchComics(search, limit)
                 : data.randomComics(limit);
 
-        }
+        },
+
+        info: (root) => data.retrieveInfo(),
+
+        genres: (root) => data.retrieveEntitiDetails('genres'),
+
+        writers: (root) => data.retrievePersons('writers'),
+
+        publishers: (root) => data.retrievePersons('publishers'),
+
+        artists: (root) => data.retrievePersons('artists')
     },
 
     Mutation: {
@@ -30,6 +40,18 @@ const resolvers = {
             return data.findComic(_id);
 
         }
+    },
+
+    Info: {
+        issues: async () => (await data.retrieveIssues())[0].count,
+        genres: async () => (await data.retrieveEntitiDetails('genres')).length,
+        writers: async () => (await data.retrievePersons('writers')).length,
+        publishers: async () => (await data.retrievePersons('publishers')).length,
+        artists: async () => (await data.retrievePersons('artists')).length,
+        comics: async () => ({
+            completed: data.retrieveComicsByStatus('Completed'),
+            ongoing: data.retrieveComicsByStatus('Ongoing')
+        })
     },
 
     Issue: {
