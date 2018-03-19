@@ -22,7 +22,10 @@ type ComicsCount {
   ongoing: Int
 }
 
+scalar Date
+
 type Info {
+  last_update: Date,
   genres: Int,
   writers: Int,
   publishers: Int,
@@ -65,7 +68,8 @@ type Comic {
   artists: [Person],
   writers: [Person],
   genres: [EntityDetail],
-  publishers: [EntityDetail]
+  publishers: [EntityDetail],
+  last_update: Date
 }
 `;
 

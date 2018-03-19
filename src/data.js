@@ -115,6 +115,8 @@ const retrieveInfo = () => ({});
 
 const retrieveComicsByStatus = (status) => db.comics.count({status});
 
+const retrieveLastUpdate = () => db.comics.findAsCursor({}, {last_update: 1}).sort({last_update: -1}).limit(1).next();
+
 module.exports = {
     findComic,
     findUserComic,
@@ -129,5 +131,6 @@ module.exports = {
     retrieveEntitiDetails,
     retrievePersons,
     retrieveIssues,
-    retrieveComicsByStatus
+    retrieveComicsByStatus,
+    retrieveLastUpdate
 }

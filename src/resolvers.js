@@ -1,5 +1,7 @@
 const data = require('./data');
 const sourceServer = require('./source');
+const { GraphQLScalarType } = require('graphql');
+const { Kind } = require('graphql/language');
 
 const resolvers = {
     Query: {
@@ -42,7 +44,16 @@ const resolvers = {
         }
     },
 
+    Date: new GraphQLScalarType({
+        name: 'Date',
+        description: 'Date custom scalar type',
+        parseValue: (value) => new Date(value),
+        serialize: (value) => new Date(value),
+        parseLiteral: (ast) => (ast.kind === Kind.INT) ? parseInt(ast.value, 10) : null,
+    }),
+
     Info: {
+        last_update: async () => (await data.retrieveLastUpdate()).last_update,
         issues: async () => (await data.retrieveIssues())[0].count,
         genres: async () => (await data.retrieveEntitiDetails('genres')).length,
         writers: async () => (await data.retrievePersons('writers')).length,
