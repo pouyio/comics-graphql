@@ -4,12 +4,12 @@ const resolvers = require('./resolvers');
 const typeDefs = `
 type Query {
   comic(_id: String!): Comic,
-  comics(search: String, limit: Int, wish: Boolean): [Comic],
+  comics(search: String, limit: Int, wish: Boolean, onlyNew: Boolean): [Comic],
   genres: [EntityDetail],
   writers: [Person],
   publishers: [Person],
   artists: [Person],
-  info: Info,
+  info: Info
 }
 
 type Mutation {

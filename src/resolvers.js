@@ -8,8 +8,9 @@ const resolvers = {
 
         comic: (root, { _id }) => data.findComic(_id),
 
-        comics: (root, { search, wish, limit = 10 }, { user }) => {
+        comics: (root, { search, wish, limit = 10, onlyNew = false }, { user }) => {
 
+            if (onlyNew) return data.retrieveNew();
             if (wish) return data.comicsByUser(user);
 
             return search
@@ -53,7 +54,7 @@ const resolvers = {
     }),
 
     Info: {
-        last_update: async () => (await data.retrieveLastUpdate()).last_update,
+        last_update: async () => (await data.retrieveLastUpdateDate()).last_update,
         issues: async () => (await data.retrieveIssues())[0].count,
         genres: async () => (await data.retrieveEntitiDetails('genres')).length,
         writers: async () => (await data.retrievePersons('writers')).length,

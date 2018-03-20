@@ -113,9 +113,17 @@ const retrieveIssues = () => db.comics.aggregate([
 
 const retrieveInfo = () => ({});
 
-const retrieveComicsByStatus = (status) => db.comics.count({status});
+const retrieveComicsByStatus = (status) => db.comics.count({ status });
 
-const retrieveLastUpdate = () => db.comics.findAsCursor({}, {last_update: 1}).sort({last_update: -1}).limit(1).next();
+const retrieveLastUpdateDate = () => db.comics.findAsCursor({}, { last_update: 1 }).sort({ last_update: -1 }).limit(1).next();
+
+const retrieveNew = async () => {
+    const lastDate = (await db.comics.findAsCursor({}, { last_update: 1 }).sort({ last_update: -1 }).limit(1).next()).last_update;
+    const $gte = new Date(new Date(lastDate).setDate(new Date(lastDate).getDate() - 1));
+
+    return db.comics.find({ 'last_update': { $gte } });
+
+}
 
 module.exports = {
     findComic,
@@ -132,5 +140,6 @@ module.exports = {
     retrievePersons,
     retrieveIssues,
     retrieveComicsByStatus,
-    retrieveLastUpdate
+    retrieveLastUpdateDate,
+    retrieveNew
 }
