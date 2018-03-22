@@ -1,5 +1,6 @@
 require('dotenv').load();
 const fs = require('fs');
+const path = require('path');
 const https = require('https');
 const express = require('express');
 const cors = require('./src/cors');
@@ -30,6 +31,16 @@ app.get('/img/*', async (req, res) => {
 })
 
 app.use(check_token);
+
+app.get('/log', (req, res) => {
+    const filePath = path.join(__dirname + '/static/LOGFILE.log');
+
+    if (fs.existsSync(filePath)) {
+        res.send(fs.readFileSync(filePath)).end();
+    } else {
+        res.status(404).end();
+    }
+});
 
 app.use('/graphql', graphqlExpress((req) => ({ schema, context: { user: req.user } })));
 
