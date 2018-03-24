@@ -13,12 +13,10 @@ if (process.env.NODE_ENV === 'production') {
         .createServer(options || {}, api)
         .listen(process.env.PORT, () => console.log('Comics-api listenin on port ' + process.env.PORT));
 
-    new CronJob('*/40 * * * * *', scrap, null, true);
+    new CronJob('0 0 5 * * *', scrap, null, true);
 } else {
     
     require('http')
     .createServer(api)
     .listen(process.env.PORT, () => console.log('Comics-api listenin on port ' + process.env.PORT));
 }
-
-new CronJob('0 0 5 * * *', scrap, null, true);
