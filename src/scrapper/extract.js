@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 
 const _get_url_last_part = (url) => url.replace(/^.*?\/([^\/]+?)(\?.+)?$/, '$1').toLowerCase();
-const _get_url_img = (url) => url.replace(process.env.SOURCE_URL, 'img');
+const _get_url_img = (url) => url.replace(process.env.SOURCE_URL, '/img/');
 
 const _get_linked_data = ($data, type) => {
   const id = _get_url_last_part($data.attr('href'));
