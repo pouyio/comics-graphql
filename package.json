@@ -24,6 +24,7 @@
     "mongoist": "^1.7.2",
     "python-shell": "^0.5.0",
     "shell": "^0.5.0",
-    "simple-node-logger": "^0.93.37"
+    "simple-node-logger": "^0.93.37",
+    "spdy": "^3.4.7"
   }
 }
