@@ -15,6 +15,7 @@ const insertComic = async (newComic) => {
     logger.info('Failed insert: ' + newComic._id)
     logger.error(e);
   }
+  return;
 }
 
 const updateComic = async (_id, issues) => {
@@ -25,9 +26,14 @@ const updateComic = async (_id, issues) => {
     logger.info('Failed update: ' + newComic._id)
     logger.error(e);
   }
+  return;
 }
 
 const loadComic = async (_id, oldComic) => {
+  logger.info('Loading: ' + _id);
+  if (_id === 'Bombshells-United') {
+    console.log('paro')
+  }
   const body = await py_request(`${process.env.SOURCE_URL}Comic/${_id}`);
   const newComic = await extract.details(body, _id);
   if (!newComic._id) return;
@@ -36,6 +42,7 @@ const loadComic = async (_id, oldComic) => {
   } else if ((oldComic.issues || []).length < (newComic.issues || []).length) {
     await updateComic(_id, newComic.issues);
   }
+  return;
 }
 
 
@@ -46,14 +53,16 @@ const run = async (db, url) => {
     const body = await py_request(`${url}?page=${page}`);
     const $ = cheerio.load(body);
 
-    $('.listing a').map(async (i, el) => {
-      const _id = $(el).attr('href').split('/').reverse()[0];
+    const ids = $('.listing a').map((i, el) => $(el).attr('href').split('/').reverse()[0]).get();
+
+    for(const _id of ids) {
       const found = await db.comics.findOne({ _id }, { _id: 1, issues: 1 });
       await loadComic(_id, found);
-    }).get();
+    }
 
     page++;
   }
+  return;
 }
 
 const scrap = async () => {
