@@ -12,7 +12,7 @@ const insertComic = async (newComic) => {
   try {
     await db.comics.insert({ ...newComic, last_update: new Date() });
   } catch (e) {
-    logger.info('Failed insert: ' + newComic._id)
+    logger.error('Failed insert: ' + newComic._id)
     logger.error(e);
   }
   return;
@@ -23,14 +23,13 @@ const updateComic = async (_id, issues) => {
   try {
     await db.comics.update({ _id }, { $currentDate: { last_update: true }, $push: { issues: { $each: issues } } });
   } catch (e) {
-    logger.info('Failed update: ' + newComic._id)
+    logger.error('Failed update: ' + newComic._id)
     logger.error(e);
   }
   return;
 }
 
 const loadComic = async (_id, oldComic) => {
-  logger.info('Loading: ' + _id);
   const body = await py_request(`${process.env.SOURCE_URL}Comic/${_id}`);
   const newComic = await extract.details(body, _id);
   if (!newComic._id) return;
@@ -46,7 +45,7 @@ const loadComic = async (_id, oldComic) => {
 const run = async (db, url) => {
   let page = 1;
   while (page <= lastPage) {
-    logger.info('Scrapping page: ' + page);
+    logger.info('Page: ' + page);
     const body = await py_request(`${url}?page=${page}`);
     const $ = cheerio.load(body);
 
@@ -63,9 +62,9 @@ const run = async (db, url) => {
 }
 
 const scrap = async () => {
-  logger.info('--------- New comics ---------');
+  logger.info('------------ New comics ------------');
   await run(db, `${process.env.SOURCE_URL}ComicList/Newest`);
-  logger.info('--------- Comics updated ---------');
+  logger.info('------------ Comics updated ------------');
   await run(db, `${process.env.SOURCE_URL}ComicList/LatestUpdate`);
   return true;
 }
