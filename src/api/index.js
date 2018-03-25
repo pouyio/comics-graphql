@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { graphqlExpress } = require('apollo-server-express');
@@ -29,16 +27,6 @@ api.get('/img/*', async (req, res) => {
 })
 
 api.use(check_token);
-
-api.get('/log', (req, res) => {
-    const filePath = path.join(process.cwd() + process.env.LOG_PATH);
-
-    if (fs.existsSync(filePath)) {
-        res.send(fs.readFileSync(filePath)).end();
-    } else {
-        res.status(404).end();
-    }
-});
 
 api.use('/graphql', graphqlExpress((req) => ({ schema, context: { user: req.user } })));
 

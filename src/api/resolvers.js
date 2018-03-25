@@ -1,7 +1,9 @@
-const data = require('./data');
-const sourceServer = require('./source');
+const fs = require('fs');
+const path = require('path');
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
+const data = require('./data');
+const sourceServer = require('./source');
 
 const resolvers = {
     Query: {
@@ -27,7 +29,12 @@ const resolvers = {
 
         publishers: (root) => data.retrievePersons('publishers'),
 
-        artists: (root) => data.retrievePersons('artists')
+        artists: (root) => data.retrievePersons('artists'),
+
+        log: (root) => {
+            const filePath = path.join(process.cwd() + process.env.LOG_PATH);
+            return fs.existsSync(filePath) ? fs.readFileSync(filePath) : '';
+        }
     },
 
     Mutation: {
@@ -60,7 +67,7 @@ const resolvers = {
         writers: async () => (await data.retrievePersons('writers')).length,
         publishers: async () => (await data.retrievePersons('publishers')).length,
         artists: async () => (await data.retrievePersons('artists')).length,
-        comics: async () => ({
+        comics: () => ({
             completed: data.retrieveComicsByStatus('Completed'),
             ongoing: data.retrieveComicsByStatus('Ongoing')
         })

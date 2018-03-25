@@ -9,7 +9,8 @@ type Query {
   writers: [Person],
   publishers: [Person],
   artists: [Person],
-  info: Info
+  info: Info,
+  log: String
 }
 
 type Mutation {
