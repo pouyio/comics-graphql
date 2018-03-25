@@ -31,7 +31,7 @@ api.get('/img/*', async (req, res) => {
 api.use(check_token);
 
 api.get('/log', (req, res) => {
-    const filePath = path.join(process.env.PWD + process.env.LOG_PATH);
+    const filePath = path.join(process.cwd() + process.env.LOG_PATH);
 
     if (fs.existsSync(filePath)) {
         res.send(fs.readFileSync(filePath)).end();
