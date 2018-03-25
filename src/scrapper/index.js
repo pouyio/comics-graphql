@@ -31,9 +31,6 @@ const updateComic = async (_id, issues) => {
 
 const loadComic = async (_id, oldComic) => {
   logger.info('Loading: ' + _id);
-  if (_id === 'Bombshells-United') {
-    console.log('paro')
-  }
   const body = await py_request(`${process.env.SOURCE_URL}Comic/${_id}`);
   const newComic = await extract.details(body, _id);
   if (!newComic._id) return;
@@ -66,7 +63,9 @@ const run = async (db, url) => {
 }
 
 const scrap = async () => {
+  logger.info('--------- New comics ---------');
   await run(db, `${process.env.SOURCE_URL}ComicList/Newest`);
+  logger.info('--------- Comics updated ---------');
   await run(db, `${process.env.SOURCE_URL}ComicList/LatestUpdate`);
   return true;
 }
