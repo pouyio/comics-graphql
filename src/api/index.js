@@ -5,9 +5,11 @@ const cors = require('./cors');
 const schema = require('./schema');
 const { check_token, login } = require('./auth');
 const { makeRequest } = require('./source');
+const compression = require('compression');
 
 const api = express();
 
+api.use(compression());
 api.use(cors);
 
 api.use(bodyParser.json());
