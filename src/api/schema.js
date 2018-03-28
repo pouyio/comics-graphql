@@ -26,6 +26,8 @@ type Query {
     publishers: [String!],
       # Filter comics containing all of these artists
     artists: [String!],
+      # Minimun number of issues starting in 1
+    numberOfIssues: Int
   ): [Comic]
 
     # Retrieve all different genres

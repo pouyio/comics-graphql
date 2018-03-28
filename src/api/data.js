@@ -115,22 +115,25 @@ const retrieveNew = async () => {
 
 }
 
-const retrieveComics = ({ search, genres , writers , publishers , artists }, { offset, limit }) => {
+const retrieveComics = ({ search, genres, writers, publishers, artists, numberOfIssues }, { offset, limit }) => {
     const query = {};
     if (search) {
         query.$text = { $search: search };
     }
     if (genres.length) {
-        query['genres.id'] = {$all: genres}
+        query['genres.id'] = { $all: genres }
     }
     if (writers.length) {
-        query['writers.id'] = {$all: writers}
+        query['writers.id'] = { $all: writers }
     }
     if (publishers.length) {
-        query['publishers.id'] = {$all: publishers}
+        query['publishers.id'] = { $all: publishers }
     }
     if (artists.length) {
-        query['artists.id'] = {$all: artists}
+        query['artists.id'] = { $all: artists }
+    }
+    if (numberOfIssues !== undefined) {
+        query[`issues.${numberOfIssues - 1}`] = { $exists: true };
     }
 
     return db.comics.findAsCursor(query, { score: { $meta: "textScore" } })
