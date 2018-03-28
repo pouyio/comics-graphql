@@ -3,23 +3,47 @@ const resolvers = require('./resolvers');
 
 const typeDefs = `
 type Query {
+    # Retrieve one comic by ID
   comic(_id: String!): Comic
+
+    # Find comics based on different parameters
   comics(
+      # Pagination offset
     offset: Int,
+      # Pagination limit
     limit: Int,
+      # Retrieve comics wished by the user
     wish: Boolean,
+      # Retrieve last comics updated
     onlyNew: Boolean,
+      # Text to lookup on title and summary
     search: String,
-    genre: String,
-    writer: String,
-    publisher: String,
-    artist: String,
+      # Filter comics containing all of these genres
+    genres: [String!],
+      # Filter comics containing all of these writers
+    writers: [String!],
+      # Filter comics containing all of these publishers
+    publishers: [String!],
+      # Filter comics containing all of these artists
+    artists: [String!],
   ): [Comic]
+
+    # Retrieve all different genres
   genres(offset: Int, limit: Int): [EntityDetail]
+
+    # Retrieve all different writers
   writers(offset: Int, limit: Int): [Person]
+
+    # Retrieve all different publishers
   publishers(offset: Int, limit: Int): [Person]
+
+    # Retrieve all different artists
   artists(offset: Int, limit: Int): [Person]
+
+    # Global info and numbers
   info: Info
+
+    # Plain log text from the scrapper
   log: String
 }
 
