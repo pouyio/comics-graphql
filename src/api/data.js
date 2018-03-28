@@ -94,7 +94,8 @@ const setPages = async (comic, issue, pages) => {
 }
 
 const retrieveEntities = async (entity, { offset, limit }) => {
-    return (await db.comics.distinct(entity)).slice(offset, offset + limit);
+    const _limit = limit ? limit: Infinity;
+    return (await db.comics.distinct(entity)).slice(offset, offset + _limit);
 }
 
 const retrieveIssues = () => db.comics.aggregate([
