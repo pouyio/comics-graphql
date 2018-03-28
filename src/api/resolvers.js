@@ -29,7 +29,7 @@ const resolvers = {
             if (onlyNew) return data.retrieveNew();
             if (wish) return data.comicsByUser(user);
 
-            if (!search && !genres && !writers && !publishers && !artists) {
+            if (!search && !genres.length && !writers.length && !publishers.length && !artists.length) {
                 return data.randomComics({ limit });
             }
             return data.retrieveComics({ search, genres, writers, publishers, artists }, { offset, limit });
