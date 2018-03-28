@@ -18,10 +18,10 @@ const resolvers = {
         comics: (root, {
             wish,
             search,
-            genre,
-            writer,
-            publisher,
-            artist,
+            genres = [],
+            writers = [],
+            publishers = [],
+            artists = [],
             offset = 0,
             limit = 10,
             onlyNew = false }, { user }) => {
@@ -29,10 +29,10 @@ const resolvers = {
             if (onlyNew) return data.retrieveNew();
             if (wish) return data.comicsByUser(user);
 
-            if (!search && !genre && !writer && !publisher && !artist) {
+            if (!search && !genres && !writers && !publishers && !artists) {
                 return data.randomComics({ limit });
             }
-            return data.retrieveComics({ search, genre, writer, publisher, artist }, { offset, limit });
+            return data.retrieveComics({ search, genres, writers, publishers, artists }, { offset, limit });
 
         },
 

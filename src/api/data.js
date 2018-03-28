@@ -115,22 +115,22 @@ const retrieveNew = async () => {
 
 }
 
-const retrieveComics = ({ search, genre, writer, publisher, artist }, { offset, limit }) => {
+const retrieveComics = ({ search, genres , writers , publishers , artists }, { offset, limit }) => {
     const query = {};
     if (search) {
         query.$text = { $search: search };
     }
-    if (genre) {
-        query['genres.id'] = genre
+    if (genres.length) {
+        query['genres.id'] = {$all: genres}
     }
-    if (writer) {
-        query['writers.id'] = writer
+    if (writers.length) {
+        query['writers.id'] = {$all: writers}
     }
-    if (publisher) {
-        query['publishers.id'] = publisher
+    if (publishers.length) {
+        query['publishers.id'] = {$all: publishers}
     }
-    if (artist) {
-        query['artists.id'] = artist
+    if (artists.length) {
+        query['artists.id'] = {$all: artists}
     }
 
     return db.comics.findAsCursor(query, { score: { $meta: "textScore" } })
