@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const data = require('./data');
 const sourceServer = require('./source');
 
-const _genericEntityResolver = (type) => (root, { offset = 0, limit = 10 }) => data.retrieveEntities(type, { offset, limit });
+const _genericEntityResolver = (type) => (root, { search = '', offset = 0, limit = 10 }) => data.retrieveEntities(type, { search, offset, limit });
 
 const _genericEntityCountResolver = (type) => async () => (await data.retrieveEntities(type, { offset: 0, limit: Infinity })).length;
 

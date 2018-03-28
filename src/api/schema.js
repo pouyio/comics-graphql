@@ -31,16 +31,16 @@ type Query {
   ): [Comic]
 
     # Retrieve all different genres
-  genres(offset: Int, limit: Int): [EntityDetail]
+  genres(search: String, offset: Int, limit: Int): [EntityDetail]
 
     # Retrieve all different writers
-  writers(offset: Int, limit: Int): [Person]
+  writers(search: String, offset: Int, limit: Int): [Person]
 
     # Retrieve all different publishers
-  publishers(offset: Int, limit: Int): [EntityDetail]
+  publishers(search: String, offset: Int, limit: Int): [EntityDetail]
 
     # Retrieve all different artists
-  artists(offset: Int, limit: Int): [Person]
+  artists(search: String, offset: Int, limit: Int): [Person]
 
     # Global info and numbers
   info: Info

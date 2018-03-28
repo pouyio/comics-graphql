@@ -93,9 +93,18 @@ const setPages = async (comic, issue, pages) => {
     db.comics.update({ _id: comic, 'issues.id': issue }, { $set: { 'issues.$.pages': pages } });
 }
 
-const retrieveEntities = async (entity, { offset, limit }) => {
+const retrieveEntities = async (entity, {search, offset, limit }) => {
     const _limit = limit ? limit: Infinity;
-    return (await db.comics.distinct(entity)).slice(offset, offset + _limit);
+    const entities = await db.comics.distinct(entity);
+    const normalSearch = search.toLowerCase();
+    return entities.filter(e => {
+        if (e.name) {
+            return e.name.toLowerCase().includes(normalSearch)
+        }
+        if (e.first_name || e.last_name) {
+            return `${e.first_name} ${e.last_name}`.toLowerCase().includes(normalSearch)
+        }
+    }).slice(offset, offset + _limit)
 }
 
 const retrieveIssues = () => db.comics.aggregate([
