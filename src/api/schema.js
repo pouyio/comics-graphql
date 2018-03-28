@@ -37,7 +37,7 @@ type Query {
   writers(offset: Int, limit: Int): [Person]
 
     # Retrieve all different publishers
-  publishers(offset: Int, limit: Int): [Person]
+  publishers(offset: Int, limit: Int): [EntityDetail]
 
     # Retrieve all different artists
   artists(offset: Int, limit: Int): [Person]
