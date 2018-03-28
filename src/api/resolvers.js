@@ -2,34 +2,46 @@ const fs = require('fs');
 const path = require('path');
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
+const jwt = require('jsonwebtoken');
 const data = require('./data');
 const sourceServer = require('./source');
+
+const _genericEntityResolver = (type) => (root, { offset = 0, limit = 10 }) => data.retrieveEntities(type, { offset, limit });
+
+const _genericEntityCountResolver = (type) => async () => (await data.retrieveEntities(type, { offset: 0, limit: Infinity })).length;
 
 const resolvers = {
     Query: {
 
         comic: (root, { _id }) => data.findComic(_id),
 
-        comics: (root, { search, wish, limit = 10, onlyNew = false }, { user }) => {
+        comics: (root, {
+            wish,
+            search,
+            genre,
+            writer,
+            publisher,
+            artist,
+            offset = 0,
+            limit = 10,
+            onlyNew = false }, { user }) => {
 
             if (onlyNew) return data.retrieveNew();
             if (wish) return data.comicsByUser(user);
 
-            return search
-                ? data.searchComics(search, limit)
-                : data.randomComics(limit);
+            if (!search && !genre && !writer && !publisher && !artist) {
+                return data.randomComics({ limit });
+            }
+            return data.retrieveComics({ search, genre, writer, publisher, artist }, { offset, limit });
 
         },
 
-        info: (root) => data.retrieveInfo(),
+        info: (root) => ({}),
 
-        genres: (root) => data.retrieveEntitiDetails('genres'),
-
-        writers: (root) => data.retrievePersons('writers'),
-
-        publishers: (root) => data.retrievePersons('publishers'),
-
-        artists: (root) => data.retrievePersons('artists'),
+        genres: _genericEntityResolver('genres'),
+        writers: _genericEntityResolver('writers'),
+        publishers: _genericEntityResolver('publishers'),
+        artists: _genericEntityResolver('artists'),
 
         log: (root) => {
             const filePath = path.join(process.cwd() + process.env.LOG_PATH);
@@ -63,13 +75,13 @@ const resolvers = {
     Info: {
         last_update: async () => (await data.retrieveLastUpdateDate()).last_update,
         issues: async () => (await data.retrieveIssues())[0].count,
-        genres: async () => (await data.retrieveEntitiDetails('genres')).length,
-        writers: async () => (await data.retrievePersons('writers')).length,
-        publishers: async () => (await data.retrievePersons('publishers')).length,
-        artists: async () => (await data.retrievePersons('artists')).length,
+        genres: _genericEntityCountResolver('genres'),
+        writers: _genericEntityCountResolver('writers'),
+        publishers: _genericEntityCountResolver('publishers'),
+        artists: _genericEntityCountResolver('artists'),
         comics: () => ({
-            completed: data.retrieveComicsByStatus('Completed'),
-            ongoing: data.retrieveComicsByStatus('Ongoing')
+            completed: data.retrieveTotalComicsByStatus('Completed'),
+            ongoing: data.retrieveTotalComicsByStatus('Ongoing')
         })
     },
 
@@ -119,7 +131,7 @@ const resolvers = {
             })
         },
 
-        wish: (root, { }, { user }) => data.comicWishForUser(user, root._id),
+        wish: (root, _, { user }) => data.comicWishForUser(user, root._id),
 
         cover: (root) => (root.cover.indexOf('/img/') === 0)
             ? `${process.env.API_URL}${root.cover}`

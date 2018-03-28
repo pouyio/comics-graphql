@@ -36,15 +36,7 @@ const findUserComic = async (_id, user) => {
     return userComics ? userComics.comics[0] : {};
 }
 
-const searchComics = (search, limit) => db.comics
-    .findAsCursor(
-        { $text: { $search: search } },
-        { score: { $meta: "textScore" } })
-    .sort({ score: { $meta: "textScore" } })
-    .limit(limit)
-    .toArray();
-
-const randomComics = (limit) => db.comics.aggregate([{ $sample: { size: limit } }]);
+const randomComics = ({ limit }) => db.comics.aggregate([{ $sample: { size: limit } }]);
 
 
 const updateComicWish = async (_id, wish, user) => {
@@ -101,9 +93,9 @@ const setPages = async (comic, issue, pages) => {
     db.comics.update({ _id: comic, 'issues.id': issue }, { $set: { 'issues.$.pages': pages } });
 }
 
-const retrieveEntitiDetails = (entity) => db.comics.distinct(entity);
-
-const retrievePersons = (person) => db.comics.distinct(person);
+const retrieveEntities = async (entity, { offset, limit }) => {
+    return (await db.comics.distinct(entity)).slice(offset, offset + limit);
+}
 
 const retrieveIssues = () => db.comics.aggregate([
     { $match: { issues: { $type: 3 } } },
@@ -111,9 +103,7 @@ const retrieveIssues = () => db.comics.aggregate([
     { $group: { _id: null, count: { $sum: '$issues' } } }
 ]);
 
-const retrieveInfo = () => ({});
-
-const retrieveComicsByStatus = (status) => db.comics.count({ status });
+const retrieveTotalComicsByStatus = (status) => db.comics.count({ status });
 
 const retrieveLastUpdateDate = () => db.comics.findAsCursor({}, { last_update: 1 }).sort({ last_update: -1 }).limit(1).next();
 
@@ -125,21 +115,44 @@ const retrieveNew = async () => {
 
 }
 
+const retrieveComics = ({ search, genre, writer, publisher, artist }, { offset, limit }) => {
+    const query = {};
+    if (search) {
+        query.$text = { $search: search };
+    }
+    if (genre) {
+        query['genres.id'] = genre
+    }
+    if (writer) {
+        query['writers.id'] = writer
+    }
+    if (publisher) {
+        query['publishers.id'] = publisher
+    }
+    if (artist) {
+        query['artists.id'] = artist
+    }
+
+    return db.comics.findAsCursor(query, { score: { $meta: "textScore" } })
+        .sort({ score: { $meta: "textScore" } })
+        .skip(offset)
+        .limit(limit)
+        .toArray();
+}
+
 module.exports = {
     findComic,
     findUserComic,
-    searchComics,
     randomComics,
     updateComicWish,
     updateIssueForUser,
     comicWishForUser,
     comicsByUser,
     setPages,
-    retrieveInfo,
-    retrieveEntitiDetails,
-    retrievePersons,
+    retrieveEntities,
     retrieveIssues,
-    retrieveComicsByStatus,
+    retrieveTotalComicsByStatus,
     retrieveLastUpdateDate,
-    retrieveNew
+    retrieveNew,
+    retrieveComics
 }
