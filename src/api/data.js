@@ -93,7 +93,7 @@ const setPages = async (comic, issue, pages) => {
     db.comics.update({ _id: comic, 'issues.id': issue }, { $set: { 'issues.$.pages': pages } });
 }
 
-const retrieveEntities = async (entity, {search, offset, limit }) => {
+const retrieveEntities = async (entity, {search = '', offset, limit }) => {
     const _limit = limit ? limit: Infinity;
     const entities = await db.comics.distinct(entity);
     const normalSearch = search.toLowerCase();
