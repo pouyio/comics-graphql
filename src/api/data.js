@@ -98,6 +98,7 @@ const retrieveEntities = async (entity, {search = '', offset, limit }) => {
     const entities = await db.comics.distinct(entity);
     const normalSearch = search.toLowerCase();
     return entities.filter(e => {
+        if(!e) return false;
         if (e.name) {
             return e.name.toLowerCase().includes(normalSearch)
         }
