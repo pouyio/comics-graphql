@@ -93,12 +93,26 @@ const setPages = async (comic, issue, pages) => {
     db.comics.update({ _id: comic, 'issues.id': issue }, { $set: { 'issues.$.pages': pages } });
 }
 
-const retrieveEntities = async (entity, {search = '', offset, limit }) => {
-    const _limit = limit ? limit: Infinity;
+const retrieveEntity = async (entity, { id }) => {
+    const type = `${entity}.id`;
+    const $matchStage = { $match: { [type]: id } };
+    const elem = await db.comics.aggregate([
+        $matchStage,
+        { $project: { [entity]: 1 } },
+        { $limit: 1 },
+        { $unwind: `$${entity}` },
+        $matchStage,
+        { $group: { _id: `$${entity}` } },
+    ]);
+    return elem[0]._id;
+}
+
+const retrieveEntities = async (entity, { search = '', offset, limit }) => {
+    const _limit = limit ? limit : Infinity;
     const entities = await db.comics.distinct(entity);
     const normalSearch = search.toLowerCase();
     return entities.filter(e => {
-        if(!e) return false;
+        if (!e) return false;
         if (e.name) {
             return e.name.toLowerCase().includes(normalSearch)
         }
@@ -164,6 +178,7 @@ module.exports = {
     comicsByUser,
     setPages,
     retrieveEntities,
+    retrieveEntity,
     retrieveIssues,
     retrieveTotalComicsByStatus,
     retrieveLastUpdateDate,

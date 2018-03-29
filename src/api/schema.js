@@ -4,7 +4,7 @@ const resolvers = require('./resolvers');
 const typeDefs = `
 type Query {
     # Retrieve one comic by ID
-  comic(_id: String!): Comic
+  comic(_id: ID!): Comic
 
     # Find comics based on different parameters
   comics(
@@ -32,15 +32,23 @@ type Query {
 
     # Retrieve all different genres
   genres(search: String, offset: Int, limit: Int): [EntityDetail]
+    # Retrieve one genre
+  genre(id: ID!): EntityDetail
 
     # Retrieve all different writers
   writers(search: String, offset: Int, limit: Int): [Person]
+    # Retrieve one writer
+  writer(id: ID!): Person
 
     # Retrieve all different publishers
   publishers(search: String, offset: Int, limit: Int): [EntityDetail]
+    # Retrieve one publisher
+  publisher(id: ID!): EntityDetail
 
     # Retrieve all different artists
   artists(search: String, offset: Int, limit: Int): [Person]
+    # Retrieve one artists
+  artist(id: ID!): Person
 
     # Global info and numbers
   info: Info
@@ -83,18 +91,18 @@ type Issue {
 }
 
 type Person {
-  id: String
+  id: ID!
   first_name: String
   last_name: String
 }
 
 type EntityDetail {
-  id: String
+  id: ID!
   name: String
 }
 
 type Comic {
-  _id: String!
+  _id: ID!
   title: String
   publication_date: String
   status: String

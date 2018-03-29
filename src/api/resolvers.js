@@ -6,7 +6,9 @@ const jwt = require('jsonwebtoken');
 const data = require('./data');
 const sourceServer = require('./source');
 
-const _genericEntityResolver = (type) => (root, { search = '', offset = 0, limit = 10 }) => data.retrieveEntities(type, { search, offset, limit });
+const _genericEntityResolver = (type) => (root, { id }) => data.retrieveEntity(type, { id });
+
+const _genericEntitiesResolver = (type) => (root, { search = '', offset = 0, limit = 10 }) => data.retrieveEntities(type, { search, offset, limit });
 
 const _genericEntityCountResolver = (type) => async () => (await data.retrieveEntities(type, { offset: 0, limit: Infinity })).length;
 
@@ -29,7 +31,7 @@ const resolvers = {
 
             if (onlyNew) return data.retrieveNew();
             if (wish) return data.comicsByUser(user);
-            
+
             if (!search && !genres.length && !writers.length && !publishers.length && !artists.length && numberOfIssues === undefined) {
                 return data.randomComics({ limit });
             }
@@ -39,10 +41,16 @@ const resolvers = {
 
         info: (root) => ({}),
 
-        genres: _genericEntityResolver('genres'),
-        writers: _genericEntityResolver('writers'),
-        publishers: _genericEntityResolver('publishers'),
-        artists: _genericEntityResolver('artists'),
+        genres: _genericEntitiesResolver('genres'),
+        writers: _genericEntitiesResolver('writers'),
+        publishers: _genericEntitiesResolver('publishers'),
+        artists: _genericEntitiesResolver('artists'),
+
+        genre: _genericEntityResolver('genres'),
+        writer: _genericEntityResolver('writers'),
+        publisher: _genericEntityResolver('publishers'),
+        artist: _genericEntityResolver('artists'),
+
 
         log: (root) => {
             const filePath = path.join(process.cwd() + process.env.LOG_PATH);
