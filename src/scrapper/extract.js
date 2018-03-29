@@ -45,7 +45,7 @@ const details = (body, _id) => {
       var $item = $(item);
       var info_name = $item.find('.info:first-child').text().replace(/:/, '');
 
-      switch(info_name) {
+      switch (info_name) {
         case 'Genres':
           $item.find('a').each((_, genre) => {
             var genre_data = _get_linked_data($(genre), 'genres');
@@ -57,23 +57,32 @@ const details = (body, _id) => {
           break;
 
         case 'Publisher':
-          var publisher_data = _get_linked_data($item.find('a'), 'publishers');
+          $item.find('a').each((_, publisher) => {
+            var publisher_data = _get_linked_data($(publisher), 'publishers');
 
-          json_data.publishers.push(publisher_data);
+            json_data.publishers.push(publisher_data);
+
+          });
 
           break;
 
         case 'Writer':
-          var writer_data = _get_person_data($item.find('a'), 'writers');
+          $item.find('a').each((_, writer) => {
+            var writer_data = _get_person_data($(writer), 'writers');
 
-          json_data.writers.push(writer_data);
+            json_data.writers.push(writer_data);
+
+          });
 
           break;
 
         case 'Artist':
-          var artist_data = _get_person_data($item.find('a'), 'artists');
+          $item.find('a').each((_, artist) => {
+            var artist_data = _get_person_data($(artist), 'artists');
 
-          json_data.artists.push(artist_data);
+            json_data.artists.push(artist_data);
+
+          });
 
           break;
 
