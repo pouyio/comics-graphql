@@ -58,8 +58,8 @@ type Query {
 }
 
 type Mutation {
-  markComicWish (_id: String!, wish: Boolean!): Comic,
-  updateIssue (_id: String!, issue: String!, isRead: Boolean, page: Int): Comic
+  markComicWish (_id: ID!, wish: Boolean!): Comic,
+  updateIssue (_id: ID!, issue: String!, isRead: Boolean, page: Int): Comic
 }
 
 type ComicsCount {
