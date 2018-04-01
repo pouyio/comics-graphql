@@ -2,4 +2,5 @@ import cfscrape
 import sys
 
 scraper = cfscrape.create_scraper()
-print scraper.get(sys.argv[1]).content
+r = scraper.get(sys.argv[1])
+print r.content

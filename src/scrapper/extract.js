@@ -131,7 +131,24 @@ const details = (body, _id) => {
   return p;
 };
 
+const issue = (body) => {
+  const data = [];
+
+  const lines = body.split('\n');
+
+  for (const line of lines) {
+    const match = line.match(/lstImages\.push\(["'](.*?)["']\);/i);
+
+    if (!!match) {
+      data.push(match[1]);
+    }
+  };
+
+  return data;
+};
+
 
 module.exports = {
-  details
+  details,
+  issue
 }

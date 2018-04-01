@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const mongoist = require('mongoist');
 const db = mongoist(process.env.MONGO_URL);
-const py_request = require('./source');
+const makeRequest = require('../source');
 const extract = require('./extract');
 const logger = require('./logger');
 let lastPage = 2;
@@ -30,7 +30,7 @@ const updateComic = async (_id, issues) => {
 }
 
 const loadComic = async (_id, oldComic) => {
-  const body = await py_request(`${process.env.SOURCE_URL}Comic/${_id}`);
+  const body = await makeRequest(`${process.env.SOURCE_URL}Comic/${_id}`);
   const newComic = await extract.details(body, _id);
   if (!newComic._id) return;
   if (!oldComic) {
@@ -46,7 +46,7 @@ const run = async (db, url) => {
   let page = 1;
   while (page <= lastPage) {
     logger.info('Page: ' + page);
-    const body = await py_request(`${url}?page=${page}`);
+    const body = await makeRequest(`${url}?page=${page}`);
     const $ = cheerio.load(body);
 
     const ids = $('.listing a').map((i, el) => $(el).attr('href').split('/').reverse()[0]).get();

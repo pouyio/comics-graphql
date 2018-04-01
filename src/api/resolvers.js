@@ -4,7 +4,8 @@ const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 const jwt = require('jsonwebtoken');
 const data = require('./data');
-const sourceServer = require('./source');
+const makeRequest = require('../source');
+const extract = require('../scrapper/extract');
 
 const _genericEntityResolver = (type) => (root, { id }) => data.retrieveEntity(type, { id });
 
@@ -104,8 +105,8 @@ const resolvers = {
             const url = `${process.env.SOURCE_URL}Comic/${root.comicId}/${root.id}?readType=1&quality=hq`;
 
             try {
-                const { body } = await sourceServer.makeRequest(url);
-                const pages = await sourceServer.issue(body);
+                const { body } = await makeRequest(url);
+                const pages = extract.issue(body);
                 data.setPages(root.comicId, root.id, pages);
                 return pages;
             } catch (e) {

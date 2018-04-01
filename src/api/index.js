@@ -4,7 +4,7 @@ const { graphqlExpress } = require('apollo-server-express');
 const cors = require('./cors');
 const schema = require('./schema');
 const { check_token, login } = require('./auth');
-const { makeRequest } = require('./source');
+const makeRequest = require('../source');
 const compression = require('compression');
 
 const api = express();
@@ -21,7 +21,7 @@ api.get('/img/*', async (req, res) => {
     try {
         const { body, type } = await makeRequest(url);
         res.header('Content-Type', type);
-        res.send(body);
+        res.end(new Buffer(body));
     } catch (err) {
         console.log(err);
         res.end();
