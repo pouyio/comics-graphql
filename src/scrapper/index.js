@@ -21,7 +21,9 @@ const insertComic = async (newComic) => {
 const updateComic = async (_id, issues) => {
   logger.info('Update: ', _id);
   try {
-    await db.comics.update({ _id }, { $currentDate: { last_update: true }, $push: { issues: { $each: issues } } });
+    const { oldIssues } = await db.comics.findOne({ _id }, { issues: 1 })
+    const nonRepeatedIssues = issues.filter(i => !oldIssues.some(oi => oi.id === i.id))
+    await db.comics.update({ _id }, { $currentDate: { last_update: true }, $push: { issues: { $each: nonRepeatedIssues } } });
   } catch (e) {
     logger.error('Failed update: ' + newComic._id)
     logger.error(e);
@@ -51,7 +53,7 @@ const run = async (db, url) => {
 
     const ids = $('.listing a').map((i, el) => $(el).attr('href').split('/').reverse()[0]).get();
 
-    for(const _id of ids) {
+    for (const _id of ids) {
       const found = await db.comics.findOne({ _id }, { _id: 1, issues: 1 });
       await loadComic(_id, found);
     }
