@@ -168,6 +168,10 @@ const retrieveComics = ({ search, genres, writers, publishers, artists, numberOf
         .toArray();
 }
 
+const retrieveInfo = () => {
+    return db.info.findOne({});
+}
+
 module.exports = {
     findComic,
     findUserComic,
@@ -183,5 +187,6 @@ module.exports = {
     retrieveTotalComicsByStatus,
     retrieveLastUpdateDate,
     retrieveNew,
-    retrieveComics
+    retrieveComics,
+    retrieveInfo
 }

@@ -4,8 +4,13 @@ const db = mongoist(process.env.MONGO_URL);
 const makeRequest = require('../source');
 const extract = require('./extract');
 const logger = require('./logger');
+const data = require('../api/data');
 let lastPage = 2;
 
+const _genericEntityCountResolver = async (type) => {
+  const length = (await data.retrieveEntities(type, { offset: 0, limit: Infinity })).length;
+  return length;
+}
 
 const insertComic = async (newComic) => {
   logger.info('Insert: ', newComic._id);
@@ -28,6 +33,24 @@ const updateComic = async (_id, issues) => {
     logger.error('Failed update: ' + newComic._id)
     logger.error(e);
   }
+  return;
+}
+
+const updateInfo = async (db) => {
+  const info = {
+    last_update: (await data.retrieveLastUpdateDate()).last_update,
+    issues: (await data.retrieveIssues())[0].count,
+    genres: (await _genericEntityCountResolver('genres')),
+    writers: (await _genericEntityCountResolver('writers')),
+    publishers: (await _genericEntityCountResolver('publishers')),
+    artists: (await _genericEntityCountResolver('artists')),
+    comics: {
+      completed: await data.retrieveTotalComicsByStatus('Completed'),
+      ongoing: await data.retrieveTotalComicsByStatus('Ongoing')
+    }
+  };
+  await db.info.remove({});
+  await db.info.insert(info);
   return;
 }
 
@@ -60,6 +83,9 @@ const run = async (db, url) => {
 
     page++;
   }
+
+  await updateInfo(db);
+
   return;
 }
 

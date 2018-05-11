@@ -11,8 +11,6 @@ const _genericEntityResolver = (type) => (root, { id }) => data.retrieveEntity(t
 
 const _genericEntitiesResolver = (type) => (root, { search = '', offset = 0, limit = 10 }) => data.retrieveEntities(type, { search, offset, limit });
 
-const _genericEntityCountResolver = (type) => async () => (await data.retrieveEntities(type, { offset: 0, limit: Infinity })).length;
-
 const resolvers = {
     Query: {
 
@@ -40,7 +38,7 @@ const resolvers = {
 
         },
 
-        info: (root) => ({}),
+        info: (root) => data.retrieveInfo(),
 
         genres: _genericEntitiesResolver('genres'),
         writers: _genericEntitiesResolver('writers'),
@@ -81,19 +79,6 @@ const resolvers = {
         serialize: (value) => new Date(value),
         parseLiteral: (ast) => (ast.kind === Kind.INT) ? parseInt(ast.value, 10) : null,
     }),
-
-    Info: {
-        last_update: async () => (await data.retrieveLastUpdateDate()).last_update,
-        issues: async () => (await data.retrieveIssues())[0].count,
-        genres: _genericEntityCountResolver('genres'),
-        writers: _genericEntityCountResolver('writers'),
-        publishers: _genericEntityCountResolver('publishers'),
-        artists: _genericEntityCountResolver('artists'),
-        comics: () => ({
-            completed: data.retrieveTotalComicsByStatus('Completed'),
-            ongoing: data.retrieveTotalComicsByStatus('Ongoing')
-        })
-    },
 
     Issue: {
         pages: async (root) => {
