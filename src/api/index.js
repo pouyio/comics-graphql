@@ -20,8 +20,10 @@ api.get('/img/*', async (req, res) => {
     const url = `${process.env.SOURCE_URL}${req.params['0']}`;
     try {
         const { body, type } = await makeRequest(url);
+        const img = new Buffer.from(body, 'base64')
         res.header('Content-Type', type);
-        res.end(new Buffer(body));
+        res.header('Content-Length', img.length);
+        res.end(img);
     } catch (err) {
         console.log(err);
         res.end();
