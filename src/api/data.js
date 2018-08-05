@@ -36,6 +36,35 @@ const findUserComic = async (_id, user) => {
     return userComics ? userComics.comics[0] : {};
 }
 
+const _retrieveEntity = async (entity, { id }) => {
+    const type = `${entity}.id`;
+    const $matchStage = { $match: { [type]: id } };
+    const elem = await db.comics.aggregate([
+        $matchStage,
+        { $project: { [entity]: 1 } },
+        { $limit: 1 },
+        { $unwind: `$${entity}` },
+        $matchStage,
+        { $group: { _id: `$${entity}` } },
+    ]);
+    return elem[0]._id;
+}
+
+const _retrieveEntities = async (entity, { search = '', offset, limit }) => {
+    const _limit = limit ? limit : Infinity;
+    const entities = await db.comics.distinct(entity);
+    const normalSearch = search.toLowerCase();
+    return entities.filter(e => {
+        if (!e) return false;
+        if (e.name) {
+            return e.name.toLowerCase().includes(normalSearch)
+        }
+        if (e.first_name || e.last_name) {
+            return `${e.first_name} ${e.last_name}`.toLowerCase().includes(normalSearch)
+        }
+    }).slice(offset, offset + _limit)
+}
+
 const randomComics = ({ limit }) => db.comics.aggregate([{ $sample: { size: limit } }]);
 
 
@@ -93,35 +122,6 @@ const setPages = async (comic, issue, pages) => {
     db.comics.update({ _id: comic, 'issues.id': issue }, { $set: { 'issues.$.pages': pages } });
 }
 
-const retrieveEntity = async (entity, { id }) => {
-    const type = `${entity}.id`;
-    const $matchStage = { $match: { [type]: id } };
-    const elem = await db.comics.aggregate([
-        $matchStage,
-        { $project: { [entity]: 1 } },
-        { $limit: 1 },
-        { $unwind: `$${entity}` },
-        $matchStage,
-        { $group: { _id: `$${entity}` } },
-    ]);
-    return elem[0]._id;
-}
-
-const retrieveEntities = async (entity, { search = '', offset, limit }) => {
-    const _limit = limit ? limit : Infinity;
-    const entities = await db.comics.distinct(entity);
-    const normalSearch = search.toLowerCase();
-    return entities.filter(e => {
-        if (!e) return false;
-        if (e.name) {
-            return e.name.toLowerCase().includes(normalSearch)
-        }
-        if (e.first_name || e.last_name) {
-            return `${e.first_name} ${e.last_name}`.toLowerCase().includes(normalSearch)
-        }
-    }).slice(offset, offset + _limit)
-}
-
 const retrieveIssues = () => db.comics.aggregate([
     { $match: { issues: { $type: 3 } } },
     { $project: { issues: { '$size': '$issues' } } },
@@ -172,6 +172,11 @@ const retrieveInfo = () => {
     return db.info.findOne({});
 }
 
+const Utils = {
+    genericEntityResolver: (type) => (root, { id }) => _retrieveEntity(type, { id }),
+    genericEntitiesResolver: (type) => (root, { search = '', offset = 0, limit = 10 }) => _retrieveEntities(type, { search, offset, limit })
+}
+
 module.exports = {
     findComic,
     findUserComic,
@@ -181,12 +186,11 @@ module.exports = {
     comicWishForUser,
     comicsByUser,
     setPages,
-    retrieveEntities,
-    retrieveEntity,
     retrieveIssues,
     retrieveTotalComicsByStatus,
     retrieveLastUpdateDate,
     retrieveNew,
     retrieveComics,
-    retrieveInfo
+    retrieveInfo,
+    Utils
 }
