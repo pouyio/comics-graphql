@@ -101,11 +101,12 @@ const resolver = {
     wish: (root, _, { user }) => comicWishForUser(user, root._id),
 
     publication: (root) => {
-      if (!root.publication_date) {
+      const date = root.publication_date;
+      if (!date) {
         return [];
       }
       try {
-        return [root.publication_date.split(' - ').map(d => new Date(d))];
+        return [...date.split(' - ').map(d => new Date(d))];
       } catch (error) {
         return [];
       }
