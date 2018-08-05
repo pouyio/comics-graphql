@@ -40,7 +40,8 @@ extend type Query {
 type Comic {
     _id: ID!
     title: String
-    publication_date: String
+    publication_date: String @deprecated(reason: "Use 'publication' as Date.")
+    publication: [CustomDate]
     status: String
     summary: String
     cover: String
@@ -98,6 +99,17 @@ const resolver = {
     },
 
     wish: (root, _, { user }) => comicWishForUser(user, root._id),
+
+    publication: (root) => {
+      if (!root.publication_date) {
+        return [];
+      }
+      try {
+        return [root.publication_date.split(' - ').map(d => new Date(d))];
+      } catch (error) {
+        return [];
+      }
+    },
 
     cover: (root) => (root.cover.indexOf('/img/') === 0)
       ? `${process.env.API_URL}${root.cover}`
