@@ -1,22 +1,36 @@
 const { makeExecutableSchema } = require('graphql-tools');
-const { Query, QueryResolver } = require('./models/query');
-const { Mutation, MutationResolver } = require('./models/mutation');
-const { Comic, ComicResolver } = require('./models/comic');
-const { Person } = require('./models/person');
-const { EntityDetail } = require('./models/entityDetail');
-const { Issue, IssueResolver } = require('./models/issue');
-const { CustomDate, CustomDateResolver } = require('./models/customDate');
-const { Info } = require('./models/info');
-const { ComicsCount } = require('./models/comicsCount');
-
+const { merge } = require('lodash');
+const { typeDef: Query, resolver: QueryResolver } = require('./models/query');
+const { typeDef: Mutation, resolver: MutationResolver } = require('./models/mutation');
+const { typeDef: Comic, resolver: ComicResolver } = require('./models/comic');
+const { typeDef: Person, resolver: PersonResolver } = require('./models/person');
+const { typeDef: EntityDetail, resolver: EntityDetailResolver } = require('./models/entityDetail');
+const { typeDef: Issue, resolver: IssueResolver } = require('./models/issue');
+const { typeDef: CustomDate, resolver: CustomDateResolver } = require('./models/customDate');
+const { typeDef: Info, resolver: InfoResolver } = require('./models/info');
+const { typeDef: ComicsCount } = require('./models/comicsCount');
 
 module.exports = makeExecutableSchema({
-  typeDefs: [ CustomDate, Query, Mutation, Comic, Person, EntityDetail, Issue, Info, ComicsCount],
-  resolvers: {
-    CustomDate: CustomDateResolver,
-    Query: QueryResolver,
-    Mutation: MutationResolver,
-    Issue: IssueResolver,
-    Comic: ComicResolver
-  }
+  typeDefs: [
+    Query,
+    Mutation,
+    Comic,
+    EntityDetail,
+    Issue,
+    CustomDate,
+    ComicsCount,
+    Person,
+    Info
+  ],
+  resolvers:
+    merge(
+      QueryResolver,
+      MutationResolver,
+      ComicResolver,
+      InfoResolver,
+      CustomDateResolver,
+      QueryResolver,
+      IssueResolver,
+      EntityDetailResolver,
+      PersonResolver)
 });

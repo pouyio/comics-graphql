@@ -1,4 +1,11 @@
-const Info = `
+const { retrieveInfo } = require('../data');
+
+const typeDef = `
+extend type Query {
+  # Global info and numbers
+  info: Info
+}
+
 type Info {
     last_update: CustomDate
     genres: Int
@@ -9,6 +16,13 @@ type Info {
     comics: ComicsCount
   }`;
 
-  module.exports = {
-    Info
+const resolver = {
+  Query: {
+    info: (root) => retrieveInfo(),
   }
+}
+
+module.exports = {
+  typeDef,
+  resolver
+}

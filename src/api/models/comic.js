@@ -1,6 +1,42 @@
-const data = require('../data');
+const {
+  findComic,
+  retrieveNew,
+  comicsByUser,
+  randomComics,
+  retrieveComics,
+  findUserComic,
+  comicWishForUser } = require('../data');
 
-const Comic = `
+const typeDef = `
+extend type Query {
+  # Retrieve one comic by ID
+  comic(_id: ID!): Comic
+
+  # Find comics based on different parameters
+  comics(
+      # Pagination offset
+    offset: Int,
+      # Pagination limit
+    limit: Int,
+      # Retrieve comics wished by the user
+    wish: Boolean,
+      # Retrieve last comics updated
+    onlyNew: Boolean,
+      # Text to lookup on title and summary
+    search: String,
+      # Filter comics containing all of these genres
+    genres: [String!],
+      # Filter comics containing all of these writers
+    writers: [String!],
+      # Filter comics containing all of these publishers
+    publishers: [String!],
+      # Filter comics containing all of these artists
+    artists: [String!],
+      # Minimun number of issues starting in 1
+    numberOfIssues: Int
+  ): [Comic]
+}
+
 type Comic {
     _id: ID!
     title: String
@@ -17,33 +53,60 @@ type Comic {
     last_update: CustomDate
   }`
 
-const ComicResolver = {
-  issues: async (root, { id, number = false }, { user }) => {
+const resolver = {
+  Query: {
+    comic: (root, { _id }) => findComic(_id),
+    comics: (root, {
+      wish,
+      search,
+      numberOfIssues,
+      genres = [],
+      writers = [],
+      publishers = [],
+      artists = [],
+      offset = 0,
+      limit = 10,
+      onlyNew = false }, { user }) => {
 
-    const userComicInfo = await data.findUserComic(root._id, user);
+      if (onlyNew) return retrieveNew();
+      if (wish) return comicsByUser(user);
 
-    const userIssuesIds = Object.keys(userComicInfo).filter(k => k !== '_id' && k !== 'wish');
+      if (!search && !genres.length && !writers.length && !publishers.length && !artists.length && numberOfIssues === undefined) {
+        return randomComics({ limit });
+      }
+      return retrieveComics({ search, genres, writers, publishers, artists, numberOfIssues }, { offset, limit });
 
-    let issuesFiltered = root.issues;
-
-    if (id) issuesFiltered = issuesFiltered.filter(i => i.id === id) || issuesFiltered;
-    if (number) issuesFiltered = issuesFiltered.filter(i => i.number === number) || issuesFiltered;
-
-    return issuesFiltered.map(issue => {
-      const userIssueId = userIssuesIds.find(issueId => issueId === issue.id);
-      return { ...issue, ...userComicInfo[userIssueId], comicId: root._id, scrape: (id || number) };
-    })
+    },
   },
+  Comic: {
 
-  wish: (root, _, { user }) => data.comicWishForUser(user, root._id),
+    issues: async (root, { id, number = false }, { user }) => {
 
-  cover: (root) => (root.cover.indexOf('/img/') === 0)
-    ? `${process.env.API_URL}${root.cover}`
-    : root.cover
+      const userComicInfo = await findUserComic(root._id, user);
+
+      const userIssuesIds = Object.keys(userComicInfo).filter(k => k !== '_id' && k !== 'wish');
+
+      let issuesFiltered = root.issues;
+
+      if (id) issuesFiltered = issuesFiltered.filter(i => i.id === id) || issuesFiltered;
+      if (number) issuesFiltered = issuesFiltered.filter(i => i.number === number) || issuesFiltered;
+
+      return issuesFiltered.map(issue => {
+        const userIssueId = userIssuesIds.find(issueId => issueId === issue.id);
+        return { ...issue, ...userComicInfo[userIssueId], comicId: root._id, scrape: (id || number) };
+      })
+    },
+
+    wish: (root, _, { user }) => comicWishForUser(user, root._id),
+
+    cover: (root) => (root.cover.indexOf('/img/') === 0)
+      ? `${process.env.API_URL}${root.cover}`
+      : root.cover
+  }
 }
 
 
 module.exports = {
-  Comic,
-  ComicResolver
+  typeDef,
+  resolver
 }
