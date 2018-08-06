@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const makeRequest = require('../source');
 let s3;
 
 const _getS3 = () => {
