@@ -12,7 +12,7 @@ const _getS3 = () => {
 const _findInBucket = (filename) => {
     return new Promise((resolve, reject) => {
         _getS3().getObject({
-            Bucket: 'pouyio-images',
+            Bucket: process.env.BUCKET_NAME,
             Key: filename
         }, (err, data) => {
             if (err || !data) {
@@ -26,7 +26,7 @@ const _findInBucket = (filename) => {
 const _saveToBucket = (filename, data, type) => {
     return new Promise((resolve, reject) => {
         _getS3().putObject({
-            Bucket: 'pouyio-images',
+            Bucket: process.env.BUCKET_NAME,
             Key: filename,
             Body: data,
             ACL: 'public-read',
