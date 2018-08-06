@@ -11,15 +11,15 @@ const _getS3 = () => {
 
 const _findInBucket = (filename) => {
     return new Promise((resolve, reject) => {
-        _getS3().getObject({
+        _getS3().headObject({
             Bucket: process.env.BUCKET_NAME,
             Key: filename
         }, (err, data) => {
             if (err || !data) {
                 resolve();
-                return;
+            } else {
+                resolve(data);
             }
-            resolve(data);
         });
     })
 }
@@ -38,7 +38,9 @@ const _saveToBucket = (filename, data, type) => {
 const img_proxy = async (req, res) => {
     const filename = req.params['0'];
     const data = await _findInBucket(filename);
-    if (!data) {
+    if (data) {
+        res.redirect(`https://${process.env.BUCKET_NAME}.s3.eu-central-1.amazonaws.com/${filename}`);
+    } else {
         const url = `${process.env.SOURCE_URL}${filename}`;
         try {
             const { body, type } = await makeRequest(url);
@@ -52,11 +54,6 @@ const img_proxy = async (req, res) => {
             console.log(err);
             res.end();
         }
-        return;
-    } else {
-        res.header('Content-Type', data.ContentType);
-        res.header('Content-Length', data.Body.length);
-        res.end(data.Body);
     }
 }
 
