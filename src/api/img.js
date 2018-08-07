@@ -39,7 +39,7 @@ const img_proxy = async (req, res) => {
     const filename = req.params['0'];
     const data = await _findInBucket(filename);
     if (data) {
-        res.redirect(`https://${process.env.BUCKET_NAME}.s3.eu-central-1.amazonaws.com/${filename}`);
+        res.redirect(`https://s3.eu-central-1.amazonaws.com/${process.env.BUCKET_NAME}/${filename}`);
     } else {
         const url = `${process.env.SOURCE_URL}${filename}`;
         try {
