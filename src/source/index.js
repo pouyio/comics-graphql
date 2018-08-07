@@ -1,4 +1,3 @@
-const cloudscraper = require('cloudscraper')
 const PythonShell = require('python-shell')
 
 const _concatenate = (resultConstructor, ...arrays) => {

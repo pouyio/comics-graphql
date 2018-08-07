@@ -5,7 +5,7 @@ const cors = require('./cors');
 const schema = require('./schema');
 const { check_token, login } = require('./auth');
 const compression = require('compression');
-const { img_proxy, img_download } = require('./img');
+const { img_proxy_limiter, img_proxy_cache, img_proxy, img_download } = require('./img');
 
 const api = express();
 
@@ -16,7 +16,7 @@ api.use(bodyParser.json());
 
 api.post('/login', login);
 
-api.get('/img/*', img_proxy);
+api.get('/img/*', img_proxy_cache, img_proxy_limiter, img_proxy);
 
 api.get('/proxy-img/*', img_download);
 
