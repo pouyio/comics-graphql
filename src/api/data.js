@@ -192,5 +192,6 @@ module.exports = {
     retrieveNew,
     retrieveComics,
     retrieveInfo,
+    retrieveEntities: _retrieveEntities,
     Utils
 }
