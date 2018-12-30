@@ -6,7 +6,7 @@ const {
   retrieveComics,
   findUserComic,
   comicWishForUser } = require('../data');
-const { gql } = require('apollo-server');
+const { gql } = require('apollo-server-express');
 
 const typeDef = gql`
 extend type Query {

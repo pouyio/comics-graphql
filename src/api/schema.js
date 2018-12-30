@@ -1,4 +1,3 @@
-const { makeExecutableSchema } = require('graphql-tools');
 const { merge } = require('lodash');
 const { typeDef: Query, resolver: QueryResolver } = require('./models/query');
 const { typeDef: Mutation, resolver: MutationResolver } = require('./models/mutation');
@@ -10,7 +9,7 @@ const { typeDef: CustomDate, resolver: CustomDateResolver } = require('./models/
 const { typeDef: Info, resolver: InfoResolver } = require('./models/info');
 const { typeDef: ComicsCount } = require('./models/comicsCount');
 
-module.exports = makeExecutableSchema({
+module.exports = {
   typeDefs: [
     Query,
     Mutation,
@@ -33,4 +32,4 @@ module.exports = makeExecutableSchema({
       IssueResolver,
       EntityDetailResolver,
       PersonResolver)
-});
+};
