@@ -3,8 +3,9 @@ const {
     findComic,
     updateIssueForUser
 } = require('../data');
+const { gql } = require('apollo-server');
 
-const typeDef = `
+const typeDef = gql`
 type Mutation {
     markComicWish (_id: ID!, wish: Boolean!): Comic,
     updateIssue (_id: ID!, issue: String!, isRead: Boolean, page: Int): Comic

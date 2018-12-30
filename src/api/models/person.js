@@ -1,6 +1,7 @@
 const { Utils } = require('../data');
+const { gql } = require('apollo-server');
 
-const typeDef = `
+const typeDef = gql`
 extend type Query {
   # Retrieve all different writers
   writers(search: String, offset: Int, limit: Int): [Person]

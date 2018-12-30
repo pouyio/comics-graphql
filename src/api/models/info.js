@@ -1,6 +1,7 @@
 const { retrieveInfo } = require('../data');
+const { gql } = require('apollo-server');
 
-const typeDef = `
+const typeDef = gql`
 extend type Query {
   # Global info and numbers
   info: Info

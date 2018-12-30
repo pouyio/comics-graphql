@@ -1,7 +1,8 @@
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
+const { gql } = require('apollo-server');
 
-const typeDef = `
+const typeDef = gql`
 scalar CustomDate
 `;
 

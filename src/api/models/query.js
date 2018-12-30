@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { gql } = require('apollo-server');
 
-const typeDef = `
+const typeDef = gql`
 type Query {
     # Plain log text from the scrapper
   log: String

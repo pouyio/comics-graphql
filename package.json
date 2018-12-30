@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server": "^2.3.1",
     "apollo-server-express": "^1.4.0",
     "aws-sdk": "^2.382.0",
     "body-parser": "^1.18.3",

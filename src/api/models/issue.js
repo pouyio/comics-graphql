@@ -1,8 +1,9 @@
 const { setPages } = require('../data');
 const makeRequest = require('../../source');
 const extract = require('../../scrapper/extract');
+const { gql } = require('apollo-server');
 
-const typeDef = `
+const typeDef = gql`
 type Issue {
     id: String
     title: String

@@ -1,4 +1,6 @@
-const typeDef = `
+const { gql } = require('apollo-server');
+
+const typeDef = gql`
 type ComicsCount {
     completed: Int
     ongoing: Int
