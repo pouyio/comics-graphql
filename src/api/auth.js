@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const mongoist = require('mongoist');
-const db = mongoist(process.env.MONGO_URL);
+const db = mongoist(process.env.MONGO_URL, { useNewUrlParser: true });
 
 const check_token = async (req, res, next) => {
     try {

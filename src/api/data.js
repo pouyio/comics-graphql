@@ -1,5 +1,5 @@
 const _mongoist = require('mongoist');
-const db = _mongoist(process.env.MONGO_URL);
+const db = _mongoist(process.env.MONGO_URL, { useNewUrlParser: true });
 
 const _ensureIssueExists = async (comic, issue, user) => {
     const hasComic = await db.users.findAsCursor({ _id: user, 'comics._id': comic }).count();
