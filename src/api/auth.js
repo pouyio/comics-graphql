@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
 const mongoist = require('mongoist');
+const { AuthenticationError } = require('apollo-server-express');
 const db = mongoist(process.env.MONGO_URL, { useNewUrlParser: true });
 
-const check_token = async (req, res, next) => {
+const get_user_logged = async (req, res, next) => {
     try {
-        req.user = await jwt.verify(req.headers.authorization, process.env.SECRET);
-        next();
+        return await jwt.verify(req.headers.authorization, process.env.SECRET);
     } catch (e) {
-        res.status(401).send(e);
+        throw new AuthenticationError(e);
     }
 }
 
@@ -20,4 +20,4 @@ const login = async (req, res) => {
     res.status(401).send('User not registered');
 }
 
-module.exports = { check_token, login };
+module.exports = { get_user_logged, login };
