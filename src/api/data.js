@@ -132,11 +132,11 @@ const retrieveTotalComicsByStatus = (status) => db.comics.count({ status });
 
 const retrieveLastUpdateDate = () => db.comics.findAsCursor({}, { last_update: 1 }).sort({ last_update: -1 }).limit(1).next();
 
-const retrieveNew = async () => {
+const retrieveNew = async (limit) => {
     const lastDate = (await db.comics.findAsCursor({}, { last_update: 1 }).sort({ last_update: -1 }).limit(1).next()).last_update;
     const $gte = new Date(new Date(lastDate).setDate(new Date(lastDate).getDate() - 1));
 
-    return db.comics.find({ 'last_update': { $gte } });
+    return db.comics.findAsCursor({ 'last_update': { $gte } }).limit(limit).toArray();
 
 }
 

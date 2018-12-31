@@ -67,10 +67,10 @@ const resolver = {
       publishers = [],
       artists = [],
       offset = 0,
-      limit = 10,
+      limit = 20,
       onlyNew = false }, { user }) => {
 
-      if (onlyNew) return retrieveNew();
+      if (onlyNew) return retrieveNew(limit);
       if (wish) return comicsByUser(user);
 
       if (!search && !genres.length && !writers.length && !publishers.length && !artists.length && numberOfIssues === undefined) {
