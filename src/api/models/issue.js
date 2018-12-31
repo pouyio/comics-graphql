@@ -1,5 +1,5 @@
 const { setPages } = require('../data');
-const makeRequest = require('../../source');
+const { makeRequest } = require('../../source');
 const extract = require('../../scrapper/extract');
 const { gql } = require('apollo-server');
 

@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const mongoist = require('mongoist');
 const db = mongoist(process.env.MONGO_URL, { useNewUrlParser: true });
-const makeRequest = require('../source');
+const { makeRequest } = require('../source');
 const extract = require('./extract');
 const logger = require('./logger');
 const data = require('../api/data');

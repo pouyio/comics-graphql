@@ -1,8 +1,10 @@
 const AWS = require('aws-sdk');
 const RateLimit = require('express-rate-limit');
-const makeRequest = require('../source');
+const { makeRequest } = require('../source');
 let s3;
 
+// venom
+// http://localhost:4000/img/Uploads/Etc/5-15-2016/6354178807Untitled-1.jpg
 
 const _getS3 = () => {
     if (!s3) {
@@ -49,12 +51,10 @@ const img_proxy = async (req, res) => {
     const url = `${process.env.SOURCE_URL}${filename}`;
     try {
         const { body, type } = await makeRequest(url);
-
-        const img = new Buffer.from(body, 'base64');
         res.header('Content-Type', type);
-        res.header('Content-Length', img.length);
-        res.end(img);
-        _saveToBucket(filename, img, type);
+        res.header('Content-Length', body.length);
+        res.end(body);
+        _saveToBucket(filename, body, type);
     } catch (err) {
         console.log(err);
         res.end();
