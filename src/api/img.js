@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const RateLimit = require('express-rate-limit');
-const { makeRequest } = require('../source');
+// const { makeRequest } = require('../source');
 let s3;
 
 const _getS3 = () => {
@@ -51,7 +51,8 @@ const img_proxy = async (req, res) => {
     const filename = req.params['0'];
     const url = `${process.env.SOURCE_URL}${filename}`;
     try {
-        const { body, type } = await makeRequest(url);
+        // const { body, type } = await makeRequest(url);
+        const { body, type } = {}
         res.header('Content-Type', type);
         res.header('Content-Length', body.length);
         res.end(body);
@@ -65,7 +66,8 @@ const img_proxy = async (req, res) => {
 const img_download = async (req, res) => {
     const url = `${req.params['0']}`;
     try {
-        const { body, type } = await makeRequest(url, true);
+        // const { body, type } = await makeRequest(url, true);
+        const { body, type } = {};
         const img = new Buffer.from(body, 'base64');
         res.header('Content-Type', type);
         res.header('Content-Length', img.length);
