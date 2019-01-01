@@ -1,6 +1,14 @@
-const { S3 } = require('aws-sdk');
+// const { S3 } = require('aws-sdk');
 // const RateLimit = require('express-rate-limit');
+const { createClient } = require('s3-node-client');
 // const { makeRequest } = require('../source');
+
+const s3 = createClient({
+    s3Options: {
+        accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
+    },
+});
 
 // const s3 = new AWS.S3({
 //     accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
