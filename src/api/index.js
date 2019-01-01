@@ -24,16 +24,16 @@ router.get('/img/*', img_proxy_cache, img_proxy_limiter, img_proxy);
 
 router.get('/proxy-img/*', img_download);
 
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    introspection: true,
-    context: async ({ req, res }) => {
-        const user = await get_user_logged(req, res);
-        return { user };
-    }
-});
-server.applyMiddleware({ app: api, path: BASE_URL_DEPLOY + '/graphql' });
+// const server = new ApolloServer({
+//     typeDefs,
+//     resolvers,
+//     introspection: true,
+//     context: async ({ req, res }) => {
+//         const user = await get_user_logged(req, res);
+//         return { user };
+//     }
+// });
+// server.applyMiddleware({ app: api, path: BASE_URL_DEPLOY + '/graphql' });
 
 api.use(BASE_URL_DEPLOY, router);
 
