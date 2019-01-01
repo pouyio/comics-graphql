@@ -1,11 +1,11 @@
-const AWS = require('aws-sdk');
+// const AWS = require('aws-sdk');
 // const RateLimit = require('express-rate-limit');
 // const { makeRequest } = require('../source');
 
-const s3 = new AWS.S3({
-    accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
-})
+// const s3 = new AWS.S3({
+//     accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
+// })
 
 // const _findInBucket = (filename) => {
 //     return new Promise((resolve) => {
