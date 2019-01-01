@@ -1,6 +1,6 @@
 const express = require('express');
-// const compression = require('compression');
-// const bodyParser = require('body-parser');
+const compression = require('compression');
+const bodyParser = require('body-parser');
 const serverless = require('serverless-http');
 // const { ApolloServer, AuthenticationError } = require('apollo-server-express');
 // const cors = require('./cors');
@@ -13,9 +13,9 @@ const BASE_URL_DEPLOY = '/.netlify/functions/index';
 const api = express();
 const router = express.Router();
 
-// api.use(compression());
+api.use(compression());
 // api.use(cors);
-// api.use(bodyParser.json());
+api.use(bodyParser.json());
 
 router.get('/ok', (req, res) => res.send('ok!'));
 // router.post('/login', login);
