@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "debug": "node --inspect-brk app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prod": "netlify-lambda build src/api"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,8 @@
     "jsonwebtoken": "^8.1.0",
     "lodash.merge": "^4.6.1",
     "mongoist": "^2.0.0",
+    "netlify-lambda": "^1.1.1",
+    "serverless-http": "^1.8.0",
     "simple-node-logger": "^18.12.21",
     "spdy": "^3.4.7"
   }
