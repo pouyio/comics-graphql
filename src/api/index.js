@@ -1,6 +1,7 @@
 const express = require('express');
 const compression = require('compression');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schema');
 const { get_user_logged, login } = require('./auth');
@@ -12,6 +13,7 @@ const app = express();
 const router = express.Router();
 
 app.use(compression());
+app.use(cors());
 app.use(bodyParser.json());
 
 router.get('/ok', (req, res) => res.send('ok!!!!'));
