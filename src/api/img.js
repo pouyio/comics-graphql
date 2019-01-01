@@ -1,11 +1,11 @@
-// const AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
 // const RateLimit = require('express-rate-limit');
 // const { makeRequest } = require('../source');
 
-// const s3 = new AWS.S3({
-//     accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
-// })
+const s3 = new AWS.S3({
+    accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
+})
 
 // const _findInBucket = (filename) => {
 //     return new Promise((resolve) => {
@@ -21,17 +21,17 @@
 //         });
 //     })
 // }
-// const _saveToBucket = (filename, data, type) => {
-//     return new Promise((resolve) => {
-//         s3.putObject({
-//             Bucket: process.env.BUCKET_NAME,
-//             Key: filename,
-//             Body: data,
-//             ACL: 'public-read',
-//             ContentType: type
-//         }, resolve);
-//     })
-// }
+const _saveToBucket = (filename, data, type) => {
+    return new Promise((resolve) => {
+        s3.putObject({
+            Bucket: process.env.BUCKET_NAME,
+            Key: filename,
+            Body: data,
+            ACL: 'public-read',
+            ContentType: type
+        }, resolve);
+    })
+}
 
 // const img_proxy_limiter = new RateLimit({
 //     windowMs: 5 * 1000,
@@ -49,7 +49,7 @@ const img_proxy = async (req, res) => {
         res.header('Content-Type', type);
         res.header('Content-Length', body.length);
         res.end(body);
-        // _saveToBucket(filename, body, type);
+        _saveToBucket(filename, body, type);
     } catch (err) {
         console.log(err);
         res.end();
