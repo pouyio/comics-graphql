@@ -27,6 +27,7 @@ router.get('/proxy-img/*', img_download);
 const server = new ApolloServer({
     typeDefs,
     resolvers,
+    introspection: true,
     context: async ({ req, res }) => {
         const user = await get_user_logged(req, res);
         return { user };
