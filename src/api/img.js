@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+const { S3 } = require('aws-sdk');
 // const RateLimit = require('express-rate-limit');
 // const { makeRequest } = require('../source');
 
