@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schema');
 const { get_user_logged, login } = require('./auth');
-const { img_proxy_limiter, img_proxy_cache, img_proxy, img_download } = require('./img');
+// const { img_proxy_limiter, img_proxy_cache, img_proxy, img_download } = require('./img');
+const { img_proxy_cache } = require('./img');
 
 const BASE_URL_DEPLOY = '/.netlify/functions/index';
 
@@ -14,11 +15,11 @@ const router = express.Router();
 app.use(compression());
 app.use(bodyParser.json());
 
-router.get('/ok', (req, res) => res.send('ok!'));
+router.get('/ok', (req, res) => res.send('ok!!!!'));
 
 router.post('/login', login);
 
-router.get('/img/*', img_proxy);
+router.get('/img/*', img_proxy_cache);
 // router.get('/img/*', img_proxy_cache, img_proxy_limiter, img_proxy);
 
 // router.get('/proxy-img/*', img_download);
