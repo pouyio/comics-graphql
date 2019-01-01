@@ -5,11 +5,10 @@ let s3;
 
 const _getS3 = () => {
     if (!s3) {
-        AWS.config.update({
+        s3 = new AWS.S3({
             accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
             secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
         });
-        s3 = new AWS.S3();
     }
     return s3;
 }
