@@ -21,17 +21,17 @@ const s3 = new AWS.S3({
 //         });
 //     })
 // }
-const _saveToBucket = (filename, data, type) => {
-    return new Promise((resolve) => {
-        s3.putObject({
-            Bucket: process.env.BUCKET_NAME,
-            Key: filename,
-            Body: data,
-            ACL: 'public-read',
-            ContentType: type
-        }, resolve);
-    })
-}
+// const _saveToBucket = (filename, data, type) => {
+//     return new Promise((resolve) => {
+//         s3.putObject({
+//             Bucket: process.env.BUCKET_NAME,
+//             Key: filename,
+//             Body: data,
+//             ACL: 'public-read',
+//             ContentType: type
+//         }, resolve);
+//     })
+// }
 
 // const img_proxy_limiter = new RateLimit({
 //     windowMs: 5 * 1000,
@@ -49,7 +49,7 @@ const img_proxy = async (req, res) => {
         res.header('Content-Type', type);
         res.header('Content-Length', body.length);
         res.end(body);
-        _saveToBucket(filename, body, type);
+        // _saveToBucket(filename, body, type);
     } catch (err) {
         console.log(err);
         res.end();
