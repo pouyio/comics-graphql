@@ -1,4 +1,8 @@
 const AWS = require('aws-sdk');
+AWS.config.update({
+    accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
+});
 const RateLimit = require('express-rate-limit');
 const { makeRequest } = require('../source');
 let s3;
