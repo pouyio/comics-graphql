@@ -3,9 +3,6 @@ const RateLimit = require('express-rate-limit');
 const { makeRequest } = require('../source');
 let s3;
 
-// venom
-// http://localhost:4000/img/Uploads/Etc/5-15-2016/6354178807Untitled-1.jpg
-
 const _getS3 = () => {
     if (!s3) {
         s3 = new AWS.S3();
