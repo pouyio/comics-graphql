@@ -3,8 +3,9 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schema');
-const { get_user_logged, login } = require('./auth');
-const { img_proxy_limiter, img_proxy_cache, img_proxy, img_download } = require('./img');
+const { get_user_logged } = require('./auth');
+// const { get_user_logged, login } = require('./auth');
+// const { img_proxy_limiter, img_proxy_cache, img_proxy, img_download } = require('./img');
 
 const BASE_URL_DEPLOY = '/.netlify/functions/index';
 
