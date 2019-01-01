@@ -1,28 +1,28 @@
 const express = require('express');
-const compression = require('compression');
-const bodyParser = require('body-parser');
+// const compression = require('compression');
+// const bodyParser = require('body-parser');
 const serverless = require('serverless-http');
-const { ApolloServer, AuthenticationError } = require('apollo-server-express');
-const cors = require('./cors');
-const { typeDefs, resolvers } = require('./schema');
-const { get_user_logged, login } = require('./auth');
-const { img_proxy_limiter, img_proxy_cache, img_proxy, img_download } = require('./img');
+// const { ApolloServer, AuthenticationError } = require('apollo-server-express');
+// const cors = require('./cors');
+// const { typeDefs, resolvers } = require('./schema');
+// const { get_user_logged, login } = require('./auth');
+// const { img_proxy_limiter, img_proxy_cache, img_proxy, img_download } = require('./img');
 
 const BASE_URL_DEPLOY = '/.netlify/functions/index';
 
 const api = express();
 const router = express.Router();
 
-api.use(compression());
-api.use(cors);
-api.use(bodyParser.json());
+// api.use(compression());
+// api.use(cors);
+// api.use(bodyParser.json());
 
-router.get('/', (req, res) => res.send('ok!'));
-router.post('/login', login);
+router.get('/ok', (req, res) => res.send('ok!'));
+// router.post('/login', login);
 
-router.get('/img/*', img_proxy_cache, img_proxy_limiter, img_proxy);
+// router.get('/img/*', img_proxy_cache, img_proxy_limiter, img_proxy);
 
-router.get('/proxy-img/*', img_download);
+// router.get('/proxy-img/*', img_download);
 
 // const server = new ApolloServer({
 //     typeDefs,
