@@ -1,21 +1,15 @@
 const AWS = require('aws-sdk');
 const RateLimit = require('express-rate-limit');
 // const { makeRequest } = require('../source');
-let s3;
 
-const _getS3 = () => {
-    if (!s3) {
-        s3 = new AWS.S3({
-            accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
-        });
-    }
-    return s3;
-}
+const s3 = new AWS.S3({
+    accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY
+})
 
 const _findInBucket = (filename) => {
     return new Promise((resolve) => {
-        _getS3().headObject({
+        s3.headObject({
             Bucket: process.env.BUCKET_NAME,
             Key: filename
         }, (err, data) => {
@@ -29,7 +23,7 @@ const _findInBucket = (filename) => {
 }
 const _saveToBucket = (filename, data, type) => {
     return new Promise((resolve) => {
-        _getS3().putObject({
+        s3.putObject({
             Bucket: process.env.BUCKET_NAME,
             Key: filename,
             Body: data,
