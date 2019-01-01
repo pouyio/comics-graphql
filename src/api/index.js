@@ -1,7 +1,6 @@
 const express = require('express');
 const compression = require('compression');
 const bodyParser = require('body-parser');
-const serverless = require('serverless-http');
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schema');
 const { get_user_logged, login } = require('./auth');
@@ -36,4 +35,4 @@ server.applyMiddleware({ app, path: BASE_URL_DEPLOY + '/graphql' });
 
 app.use(BASE_URL_DEPLOY, router);
 
-module.exports.handler = serverless(app);
+module.exports = { app };

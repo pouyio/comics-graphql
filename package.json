@@ -4,9 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "debug": "node --inspect-brk app.js",
-    "prod": "netlify-lambda build src/api"
+    "start": "netlify-lambda serve src",
+    "prod": "netlify-lambda build src",
+    "debug": "node --inspect app.js"
   },
   "keywords": [],
   "author": "",
@@ -30,7 +30,6 @@
     "mongoist": "^2.0.0",
     "netlify-lambda": "^1.1.1",
     "serverless-http": "^1.8.0",
-    "simple-node-logger": "^18.12.21",
-    "spdy": "^3.4.7"
+    "simple-node-logger": "^18.12.21"
   }
 }
