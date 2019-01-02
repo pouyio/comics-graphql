@@ -58,8 +58,7 @@ const img_proxy = async (req, res) => {
 const img_download = async (req, res) => {
     const url = `${req.params['0']}`;
     try {
-        // const { body, type } = await makeRequest(url, true);
-        const { body, type } = {};
+        const { body, type } = await makeRequest(url, true);
         const img = new Buffer.from(body, 'base64');
         res.header('Content-Type', type);
         res.header('Content-Length', img.length);
