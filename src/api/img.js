@@ -45,10 +45,8 @@ const img_proxy = async (req, res) => {
     const url = `${process.env.SOURCE_URL}${filename}`;
     try {
         const { body, type } = await makeRequest(url);
-        res.header('Content-Type', type);
-        res.header('Content-Length', '' + body.length);
-        res.end(body);
-        _saveToBucket(filename, body, type);
+        await _saveToBucket(filename, body, type);
+        res.redirect(`https://s3.eu-central-1.amazonaws.com/${process.env.BUCKET_NAME}/${filename}`);
     } catch (err) {
         console.log(err);
         res.end();
