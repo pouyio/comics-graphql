@@ -41,12 +41,12 @@ const img_proxy_limiter = new RateLimit({
 });
 
 const img_proxy = async (req, res) => {
-    const filename = req.params['0'];
+    const filename = req.params[0];
     const url = `${process.env.SOURCE_URL}${filename}`;
     try {
         const { body, type } = await makeRequest(url);
         res.header('Content-Type', type);
-        // res.header('Content-Length', body.length);
+        res.header('Content-Length', body.length);
         res.end(body);
         _saveToBucket(filename, body, type);
     } catch (err) {
