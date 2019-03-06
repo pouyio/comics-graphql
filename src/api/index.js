@@ -20,7 +20,8 @@ router.get('/ok', (req, res) => res.send('ok!!!!'));
 
 router.post('/login', login);
 
-router.get('/img/*', img_proxy_cache, img_proxy_limiter, img_proxy);
+// router.get('/img/*', img_proxy_cache, img_proxy_limiter, img_proxy);
+router.get('/img/*', img_proxy_cache, img_proxy);
 router.get('/proxy-img/*', img_download);
 
 const server = new ApolloServer({
