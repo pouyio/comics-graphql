@@ -1,5 +1,4 @@
 const S3 = require('aws-sdk/clients/s3');
-const RateLimit = require('express-rate-limit');
 const { makeRequest } = require('../source');
 
 const s3 = new S3({
@@ -32,13 +31,6 @@ const _saveToBucket = (filename, data, type) => {
         }, resolve);
     })
 }
-
-const img_proxy_limiter = new RateLimit({
-    windowMs: 5 * 1000,
-    delayAfter: 5,
-    max: 0,
-    delayMs: 5 * 1000
-});
 
 const img_proxy = async (req, res) => {
     const filename = req.params['0'];
@@ -82,7 +74,6 @@ const img_proxy_cache = async (req, res, next) => {
 }
 
 module.exports = {
-    img_proxy_limiter,
     img_download,
     img_proxy_cache,
     img_proxy
