@@ -34,8 +34,6 @@ const _saveToBucket = (filename, data, type) => {
 
 const img_proxy = async (req, res) => {
     const filename = req.params['0'];
-    // res.redirect(`${process.env.NOW_IMG_PROXY_LAMBDA}${filename}`);
-    // NOT working with netlify, used zeit-now function;
     const url = `${process.env.SOURCE_URL}${filename}`;
     try {
         const { body, type } = await makeRequest(url);
