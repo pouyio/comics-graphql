@@ -27,7 +27,6 @@
     "jsonwebtoken": "^8.1.0",
     "lodash.merge": "^4.6.1",
     "mongoist": "^2.0.0",
-    "serverless-http": "^1.8.0",
     "simple-node-logger": "^18.12.21"
   }
 }
