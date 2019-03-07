@@ -1,5 +1,5 @@
 require('dotenv').load();
-const { app } = require('./src');
+const app = require('./src');
 // const CronJob = require('cron').CronJob;
 // const { scrap } = require('./src/scrapper');
 
