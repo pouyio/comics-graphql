@@ -1,0 +1,28 @@
+{
+    "version": 2,
+    "alias": [
+        "comics-graphql.vicenteortiz.me"
+    ],
+    "builds": [
+        {
+            "src": "src/index.js",
+            "use": "@now/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "src/index.js"
+        }
+    ],
+    "env": {
+        "MONGO_URL": "@mongo_url",
+        "SOURCE_URL": "@source_url",
+        "API_URL": "@api_url",
+        "SECRET": "@secret",
+        "MY_AWS_ACCESS_KEY_ID": "@my_aws_access_key_id",
+        "MY_AWS_SECRET_ACCESS_KEY": "@my_aws_secret_access_key",
+        "BUCKET_NAME": "@bucket_name",
+        "NODE_ENV": "@node_env"
+    }
+}
