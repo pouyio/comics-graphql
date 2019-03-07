@@ -1,6 +1,6 @@
-require('dotenv').load();
-const serverless = require('serverless-http');
+// require('dotenv').load();
+// const serverless = require('serverless-http');
 const { app } = require('./api');
 
-module.exports = { app };
-module.exports.handler = serverless(app, { binary: ['image/*'] });
+module.exports = app;
+// module.exports.handler = serverless(app, { binary: ['image/*'] });

@@ -6,4 +6,4 @@ Stack used:
  - Apollo
  - jsonwebtoken
  - Mongoist
- - Netlify + AWS S3
+ - Zeit now + AWS S3
