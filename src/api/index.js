@@ -22,6 +22,7 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     introspection: true,
+    tracing: true,
     context: async ({ req, res }) => {
         const user = await get_user_logged(req, res);
         return { user };
