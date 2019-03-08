@@ -1,4 +1,4 @@
-const { request } = require('cloudscraper');
+const { get } = require('cloudscraper');
 
 const makeRequest = (url, img) => {
 
@@ -17,7 +17,7 @@ const makeRequest = (url, img) => {
             options.encoding = null;
         }
 
-        request(options, (error, { headers }, body) => {
+        get(options, (error, { headers }, body) => {
             if (error) {
                 reject(error);
             } else {
