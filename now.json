@@ -24,5 +24,8 @@
         "MY_AWS_SECRET_ACCESS_KEY": "@my_aws_secret_access_key",
         "BUCKET_NAME": "@bucket_name",
         "NODE_ENV": "@node_env"
-    }
+    },
+    "regions": [
+        "bru"
+    ]
 }
