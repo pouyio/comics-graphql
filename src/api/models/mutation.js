@@ -3,7 +3,7 @@ const {
     findComic,
     updateIssueForUser
 } = require('../data');
-const { gql } = require('apollo-server');
+const { gql } = require('apollo-server-express');
 
 const typeDef = gql`
 type Mutation {
