@@ -1,3 +1,3 @@
-const { app } = require('./api');
+const app = require('./api');
 
 module.exports = app;
