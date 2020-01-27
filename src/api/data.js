@@ -52,7 +52,7 @@ const _retrieveEntity = async (entity, { id }) => {
 
 const _retrieveEntities = async (entity, { search = '', offset, limit }) => {
     const _limit = limit ? limit : Infinity;
-    const entities = await db.comics.distinct(entity);
+    const entities = await db.comics.distinct(entity, {});
     const normalSearch = search.toLowerCase();
     return entities.filter(e => {
         if (!e) return false;
