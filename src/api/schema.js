@@ -1,5 +1,4 @@
 const { merge } = require('lodash');
-const { typeDef: Query, resolver: QueryResolver } = require('./models/query');
 const { typeDef: Mutation, resolver: MutationResolver } = require('./models/mutation');
 const { typeDef: Comic, resolver: ComicResolver } = require('./models/comic');
 const { typeDef: Person, resolver: PersonResolver } = require('./models/person');
@@ -11,7 +10,6 @@ const { typeDef: ComicsCount } = require('./models/comicsCount');
 
 module.exports = {
   typeDefs: [
-    Query,
     Mutation,
     Comic,
     EntityDetail,
@@ -23,12 +21,10 @@ module.exports = {
   ],
   resolvers:
     merge(
-      QueryResolver,
       MutationResolver,
       ComicResolver,
       InfoResolver,
       CustomDateResolver,
-      QueryResolver,
       IssueResolver,
       EntityDetailResolver,
       PersonResolver)

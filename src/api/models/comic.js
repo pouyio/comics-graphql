@@ -9,7 +9,7 @@ const {
 const { gql } = require('apollo-server-express');
 
 const typeDef = gql`
-extend type Query {
+type Query {
   # Retrieve one comic by ID
   comic(_id: ID!): Comic
 
