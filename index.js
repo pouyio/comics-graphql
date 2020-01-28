@@ -12,7 +12,7 @@ admin.initializeApp({
   })
 });
 
-exports.scheduledFunction = functions
+exports.scrapper = functions
   .runWith({ timeoutSeconds: 540 })
   .region("europe-west1")
   .pubsub.schedule(" 0 5 * * *")
