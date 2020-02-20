@@ -1,58 +1,72 @@
-const cheerio = require('cheerio');
-const mongoist = require('mongoist');
-const db = mongoist(process.env.MONGO_URL, { useNewUrlParser: true });
-const { makeRequest } = require('../source');
-const extract = require('./extract');
-const logger = require('./logger');
-const data = require('../api/data');
+const cheerio = require("cheerio");
+const getDb = require("../database");
+const { makeRequest } = require("../source");
+const extract = require("./extract");
+const logger = require("./logger");
+const data = require("../api/data");
 let lastPage = 2;
 
-const _genericEntityCountResolver = async (type) => {
-  const length = (await data.retrieveEntities(type, { offset: 0, limit: Infinity })).length;
+const _genericEntityCountResolver = async type => {
+  const length = (
+    await data.retrieveEntities(type, { offset: 0, limit: Infinity })
+  ).length;
   return length;
-}
+};
 
-const insertComic = async (newComic) => {
-  logger.info('Insert: ', newComic._id);
+const insertComic = async newComic => {
+  logger.info("Insert: ", newComic._id);
   try {
-    await db.comics.insert({ ...newComic, last_update: new Date() });
+    await (await getDb()).collection("comics").insert({
+      ...newComic,
+      last_update: new Date()
+    });
   } catch (e) {
-    logger.error('Failed insert: ' + newComic._id)
+    logger.error("Failed insert: " + newComic._id);
     logger.error(e);
   }
   return;
-}
+};
 
 const updateComic = async (_id, totalIssues) => {
-  logger.info('Update: ', _id);
+  logger.info("Update: ", _id);
   try {
-    const { issues } = await db.comics.findOne({ _id }, { issues: 1 })
-    const nonRepeatedIssues = totalIssues.filter(i => !issues.some(oi => oi.id === i.id))
-    await db.comics.update({ _id }, { $currentDate: { last_update: true }, $push: { issues: { $each: nonRepeatedIssues } } });
+    const { issues } = await (await getDb())
+      .collection("comics")
+      .findOne({ _id }, { issues: 1 });
+    const nonRepeatedIssues = totalIssues.filter(
+      i => !issues.some(oi => oi.id === i.id)
+    );
+    await (await getDb()).collection("comics").updateOne(
+      { _id },
+      {
+        $currentDate: { last_update: true },
+        $push: { issues: { $each: nonRepeatedIssues } }
+      }
+    );
   } catch (e) {
-    logger.error('Failed update: ' + newComic._id)
+    logger.error("Failed update: " + newComic._id);
     logger.error(e);
   }
   return;
-}
+};
 
-const updateInfo = async (db) => {
+const updateInfo = async db => {
   const info = {
     last_update: (await data.retrieveLastUpdateDate()).last_update,
     issues: (await data.retrieveIssues())[0].count,
-    genres: (await _genericEntityCountResolver('genres')),
-    writers: (await _genericEntityCountResolver('writers')),
-    publishers: (await _genericEntityCountResolver('publishers')),
-    artists: (await _genericEntityCountResolver('artists')),
+    genres: await _genericEntityCountResolver("genres"),
+    writers: await _genericEntityCountResolver("writers"),
+    publishers: await _genericEntityCountResolver("publishers"),
+    artists: await _genericEntityCountResolver("artists"),
     comics: {
-      completed: await data.retrieveTotalComicsByStatus('Completed'),
-      ongoing: await data.retrieveTotalComicsByStatus('Ongoing')
+      completed: await data.retrieveTotalComicsByStatus("Completed"),
+      ongoing: await data.retrieveTotalComicsByStatus("Ongoing")
     }
   };
-  await db.info.remove({});
-  await db.info.insert(info);
+  await (await getDb()).info.remove({});
+  await (await getDb()).info.insert(info);
   return;
-}
+};
 
 const loadComic = async (_id, oldComic) => {
   const { body } = await makeRequest(`${process.env.SOURCE_URL}Comic/${_id}`);
@@ -64,19 +78,28 @@ const loadComic = async (_id, oldComic) => {
     await updateComic(_id, newComic.issues);
   }
   return;
-}
-
+};
 
 const run = async (db, url) => {
   let page = 1;
   while (page <= lastPage) {
-    logger.info('Page: ' + page);
+    logger.info("Page: " + page);
     const { body } = await makeRequest(`${url}?page=${page}`);
     const $ = cheerio.load(body);
 
-    const ids = $('.listing a').map((i, el) => $(el).attr('href').split('/').reverse()[0]).get();
+    const ids = $(".listing a")
+      .map(
+        (i, el) =>
+          $(el)
+            .attr("href")
+            .split("/")
+            .reverse()[0]
+      )
+      .get();
 
-    const founds = await db.comics.find({ _id: { $in: ids } }, { _id: 1, issues: 1 });
+    const founds = await (await getDb())
+      .collection("comics")
+      .find({ _id: { $in: ids } }, { _id: 1, issues: 1 });
 
     for (const _id of ids) {
       const found = founds.find(c => c._id === _id);
@@ -89,14 +112,14 @@ const run = async (db, url) => {
   await updateInfo(db);
 
   return;
-}
+};
 
 const scrap = async () => {
-  logger.info('------------ New comics ------------');
+  logger.info("------------ New comics ------------");
   await run(db, `${process.env.SOURCE_URL}ComicList/Newest`);
-  logger.info('------------ Comics updated ------------');
+  logger.info("------------ Comics updated ------------");
   await run(db, `${process.env.SOURCE_URL}ComicList/LatestUpdate`);
   return true;
-}
+};
 
-module.exports = { scrap }
+module.exports = { scrap };
