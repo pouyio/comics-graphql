@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const getDb = require("../database");
+const { getDb } = require("../database");
 
 const { AuthenticationError } = require("apollo-server-express");
 

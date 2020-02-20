@@ -1,5 +1,5 @@
 const cheerio = require("cheerio");
-const getDb = require("../database");
+const { getDb } = require("../database");
 const { makeRequest } = require("../source");
 const extract = require("./extract");
 const logger = require("./logger");
@@ -16,7 +16,7 @@ const _genericEntityCountResolver = async type => {
 const insertComic = async newComic => {
   logger.info("Insert: ", newComic._id);
   try {
-    await (await getDb()).collection("comics").insert({
+    await (await getDb()).collection("comics").insertOne({
       ...newComic,
       last_update: new Date()
     });
@@ -63,8 +63,8 @@ const updateInfo = async db => {
       ongoing: await data.retrieveTotalComicsByStatus("Ongoing")
     }
   };
-  await (await getDb()).info.remove({});
-  await (await getDb()).info.insert(info);
+  await db.collection("info").deleteMany({});
+  await db.collection("info").insertOne(info);
   return;
 };
 
@@ -97,9 +97,10 @@ const run = async (db, url) => {
       )
       .get();
 
-    const founds = await (await getDb())
+    const founds = await db
       .collection("comics")
-      .find({ _id: { $in: ids } }, { _id: 1, issues: 1 });
+      .find({ _id: { $in: ids } }, { _id: 1, issues: 1 })
+      .toArray();
 
     for (const _id of ids) {
       const found = founds.find(c => c._id === _id);
@@ -115,6 +116,7 @@ const run = async (db, url) => {
 };
 
 const scrap = async () => {
+  const db = await getDb();
   logger.info("------------ New comics ------------");
   await run(db, `${process.env.SOURCE_URL}ComicList/Newest`);
   logger.info("------------ Comics updated ------------");
