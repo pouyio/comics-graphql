@@ -1,36 +1,25 @@
-const { get } = require('cloudscraper');
-const requestModule = require("request");
-const jar = requestModule.jar();
+const hooman = require("hooman");
 
 const makeRequest = (url, img) => {
+  const options = {
+    method: "GET",
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
+    },
+    followAllRedirects: true,
+  };
 
-    return new Promise((resolve, reject) => {
+  if (url.includes("/Uploads/") || img) {
+    options.encoding = null;
+  }
 
-        const options = {
-          url,
-          method: "GET",
-          headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
-          },
-          followAllRedirects: true,
-          jar
-        };
-
-        if (url.includes('/Uploads/') || img) {
-            options.encoding = null;
-        }
-
-        get(options, (error, { headers }, body) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve({ body, type: headers['content-type'] })
-            }
-        });
-
-    });
-
-}
+  return hooman
+    .get(url, options)
+    .then(({ headers, body }) => {
+      return { body, type: headers["content-type"] };
+    })
+    .catch(console.log);
+};
 
 module.exports = { makeRequest };
