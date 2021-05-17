@@ -45,7 +45,6 @@ const img_proxy = async (req, res) => {
     try {
         const { body, type } = await makeRequest(url);
         res.header('Content-Type', type);
-        res.header('Content-Length', body.length);
         res.end(body);
         _saveToBucket(filename, body, type);
     } catch (err) {

@@ -18,6 +18,7 @@
     "apollo-server-express": "^2.4.8",
     "atob": "^2.1.2",
     "aws-sdk": "^2.415.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.18.3",
     "cheerio": "^1.0.0-rc.2",
     "compression": "^1.7.2",
@@ -30,11 +31,9 @@
     "got": "^11.1.4",
     "graphql": "^14.0.2",
     "graphql-tools": "^4.0.3",
-    "hooman": "^1.2.3",
     "jsonwebtoken": "^8.1.0",
     "lodash.merge": "^4.6.2",
     "mongodb": "^3.5.3",
-    "request": "^2.88.0",
     "simple-node-logger": "^18.12.21"
   },
   "engines": {
