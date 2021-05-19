@@ -140,7 +140,7 @@ const details = (body, _id) => {
 const issue = (body) => {
   const data = [];
 
-  const lines = body.split('\n');
+  const lines = body.toString().split('\n');
 
   for (const line of lines) {
     const match = line.match(/lstImages\.push\(["'](.*?)["']\);/i);
