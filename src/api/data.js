@@ -4,7 +4,7 @@ const _ensureIssueExists = async (comic, issue, user) => {
   const hasComic = await (await getDb())
     .collection("users")
     .find({ _id: user, "comics._id": comic })
-    .countDocuments();
+    .count();
 
   if (!hasComic) {
     return await (await getDb()).collection("users").updateOne(
@@ -48,7 +48,7 @@ const _comicExistsForUser = async (_id, user) =>
   (await getDb())
     .collection("users")
     .find({ _id: user, "comics._id": _id })
-    .countDocuments();
+    .count();
 
 const findComic = async _id =>
   (await getDb()).collection("comics").findOne({ _id });
@@ -184,7 +184,7 @@ const retrieveIssues = async () =>
     .toArray();
 
 const retrieveTotalComicsByStatus = async status =>
-  (await getDb()).collection("comics").countDocuments({ status });
+  (await getDb()).collection("comics").count({ status });
 
 const retrieveLastUpdateDate = async () =>
   (await getDb())
