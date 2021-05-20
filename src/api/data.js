@@ -58,7 +58,7 @@ const findUserComic = async (_id, user) => {
     .collection("users")
     .findOne(
       { _id: user, "comics._id": _id },
-      { comics: { $elemMatch: { _id } } }
+      { projection: { comics: { $elemMatch: { _id } } } }
     );
   return userComics ? userComics.comics[0] : {};
 };
