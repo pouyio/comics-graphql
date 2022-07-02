@@ -13,7 +13,7 @@ app.use(compression());
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/ok', (req, res) => res.send('ok!!!!'));
+app.get('/', (req, res) => res.send('ok!!!!'));
 app.post('/login', login);
 app.get('/img/*', img_proxy_cache, img_speed_limiter, img_proxy);
 app.get('/proxy-img/*', img_download);
@@ -21,7 +21,7 @@ app.get('/proxy-img/*', img_download);
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    introspection: true,
+    introspection: process.env.NODE_ENV === "development",
     tracing: true,
     context: async ({ req, res }) => {
         const user = await get_user_logged(req, res);

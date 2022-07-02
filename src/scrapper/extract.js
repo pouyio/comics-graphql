@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const decodeImgs = require('./decodeImgs');
 
 const _get_url_last_part = (url) => url.replace(/^.*?\/([^\/]+?)(\?.+)?$/, '$1').toLowerCase();
 const _get_url_img = (url = '') => {
@@ -150,6 +151,7 @@ const issue = (body) => {
     }
   };
 
+  decodeImgs.beau(data);
   return data;
 };
 

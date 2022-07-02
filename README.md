@@ -5,4 +5,4 @@ Graphql API for comics
 Stack used:
  - Apollo
  - jsonwebtoken
- - Firebase + AWS S3
+ - fly.io + mongo atlas + AWS S3
