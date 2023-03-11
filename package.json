@@ -15,7 +15,7 @@
     "@defer/client": "^1.1.0",
     "apollo-server-express": "^2.4.8",
     "atob": "^2.1.2",
-    "aws-sdk": "^2.415.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.21.1",
     "body-parser": "^1.18.3",
     "cheerio": "^1.0.0-rc.2",
