@@ -3,8 +3,8 @@ const cheerio = require("cheerio");
 const { defer } = require("@defer/client");
 const { getDb } = require("../database");
 const { makeRequest } = require("../source");
-const extract = require("./scrapper/extract");
-const logger = require("./scrapper/logger");
+const extract = require("../scrapper/extract");
+const logger = require("../scrapper/logger");
 const data = require("../api/data");
 let lastPage = 5;
 
