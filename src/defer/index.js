@@ -120,5 +120,5 @@ const scrap = async () => {
   return true;
 };
 
-scrap();
-// module.exports = defer.cron(scrap, "0 0 * * *");
+// scrap();
+module.exports = defer.cron(scrap, "0 0 * * *");
