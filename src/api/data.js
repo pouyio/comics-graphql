@@ -14,9 +14,9 @@ const _ensureIssueExists = async (comic, issue, user) => {
           comics: {
             _id: comic,
             wish: false,
-            [issue]: { page: 0, read: false }
-          }
-        }
+            [issue]: { page: 0, read: false },
+          },
+        },
       }
     );
   }
@@ -50,7 +50,7 @@ const _comicExistsForUser = async (_id, user) =>
     .find({ _id: user, "comics._id": _id })
     .count();
 
-const findComic = async _id =>
+const findComic = async (_id) =>
   (await getDb()).collection("comics").findOne({ _id });
 
 const findUserComic = async (_id, user) => {
@@ -66,7 +66,9 @@ const findUserComic = async (_id, user) => {
 const _retrieveEntity = async (entity, { id }) => {
   const type = `${entity}.id`;
   const $matchStage = { $match: { [type]: id } };
-  const elem = await (await getDb())
+  const elem = await (
+    await getDb()
+  )
     .collection("comics")
     .aggregate([
       $matchStage,
@@ -74,7 +76,7 @@ const _retrieveEntity = async (entity, { id }) => {
       { $limit: 1 },
       { $unwind: `$${entity}` },
       $matchStage,
-      { $group: { _id: `$${entity}` } }
+      { $group: { _id: `$${entity}` } },
     ])
     .toArray();
   return elem[0]._id;
@@ -87,7 +89,7 @@ const _retrieveEntities = async (entity, { search = "", offset, limit }) => {
     .distinct(entity, {});
   const normalSearch = search.toLowerCase();
   return entities
-    .filter(e => {
+    .filter((e) => {
       if (!e) return false;
       if (e.name) {
         return e.name.toLowerCase().includes(normalSearch);
@@ -135,33 +137,37 @@ const updateIssueForUser = async (_id, issue, isRead, page, user) => {
 };
 
 const comicWishForUser = async (user, _id) => {
-  const result = await (await getDb())
+  const result = await (
+    await getDb()
+  )
     .collection("users")
     .aggregate([
       { $match: { _id: user } },
       { $unwind: "$comics" },
       { $replaceRoot: { newRoot: "$comics" } },
       { $match: { _id } },
-      { $project: { wish: 1, _id: 0 } }
+      { $project: { wish: 1, _id: 0 } },
     ])
     .toArray();
 
   return result.length ? result[0].wish : false;
 };
 
-const comicsByUser = async user => {
-  const comicsIds = await (await getDb())
+const comicsByUser = async (user) => {
+  const comicsIds = await (
+    await getDb()
+  )
     .collection("users")
     .aggregate([
       { $match: { _id: user } },
       { $unwind: "$comics" },
       { $match: { "comics.wish": true } },
       { $replaceRoot: { newRoot: "$comics" } },
-      { $project: { _id: 1 } }
+      { $project: { _id: 1 } },
     ])
     .toArray();
 
-  return comicsIds.map(async comic => await findComic(comic._id));
+  return comicsIds.map(async (comic) => await findComic(comic._id));
 };
 
 const setPages = async (comic, issue, pages) => {
@@ -179,11 +185,11 @@ const retrieveIssues = async () =>
     .aggregate([
       { $match: { issues: { $type: 3 } } },
       { $project: { issues: { $size: "$issues" } } },
-      { $group: { _id: null, count: { $sum: "$issues" } } }
+      { $group: { _id: null, count: { $sum: "$issues" } } },
     ])
     .toArray();
 
-const retrieveTotalComicsByStatus = async status =>
+const retrieveTotalComicsByStatus = async (status) =>
   (await getDb()).collection("comics").count({ status });
 
 const retrieveLastUpdateDate = async () =>
@@ -194,7 +200,7 @@ const retrieveLastUpdateDate = async () =>
     .limit(1)
     .next();
 
-const retrieveNew = async limit => {
+const retrieveNew = async (limit) => {
   const lastDate = (
     await (await getDb())
       .collection("comics")
@@ -253,12 +259,14 @@ const retrieveInfo = async () => {
 };
 
 const Utils = {
-  genericEntityResolver: type => (root, { id }) =>
-    _retrieveEntity(type, { id }),
-  genericEntitiesResolver: type => (
-    root,
-    { search = "", offset = 0, limit = 10 }
-  ) => _retrieveEntities(type, { search, offset, limit })
+  genericEntityResolver:
+    (type) =>
+    (root, { id }) =>
+      _retrieveEntity(type, { id }),
+  genericEntitiesResolver:
+    (type) =>
+    (root, { search = "", offset = 0, limit = 10 }) =>
+      _retrieveEntities(type, { search, offset, limit }),
 };
 
 module.exports = {
@@ -277,5 +285,5 @@ module.exports = {
   retrieveComics,
   retrieveInfo,
   retrieveEntities: _retrieveEntities,
-  Utils
+  Utils,
 };
