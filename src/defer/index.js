@@ -6,7 +6,7 @@ const { makeRequest } = require("../source");
 const extract = require("./scrapper/extract");
 const logger = require("./scrapper/logger");
 const data = require("../api/data");
-let lastPage = 200;
+let lastPage = 5;
 
 const _genericEntityCountResolver = async (type) => {
   const length = (
@@ -120,4 +120,5 @@ const scrap = async () => {
   return true;
 };
 
-module.exports = defer.cron(scrap, "0 0 * * *");
+scrap();
+// module.exports = defer.cron(scrap, "0 0 * * *");

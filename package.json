@@ -29,7 +29,7 @@
     "graphql-tools": "^4.0.3",
     "jsonwebtoken": "^8.1.0",
     "lodash.merge": "^4.6.2",
-    "mongodb": "^3.5.3",
+    "mongodb": "5.1.0",
     "simple-node-logger": "^18.12.21"
   },
   "engines": {
