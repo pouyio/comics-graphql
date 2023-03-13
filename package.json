@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@defer/client": "^1.1.0",
     "apollo-server-express": "^2.4.8",
     "atob": "^2.1.2",
     "aws-sdk": "^2.415.0",
