@@ -119,5 +119,6 @@ const scrap = async () => {
   return true;
 };
 
+module.exports = { scrap };
+
 // scrap();
-module.exports = scrap;
