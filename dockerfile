@@ -42,6 +42,3 @@ RUN yarn install && yarn cache clean
 
 # express server port
 EXPOSE 8080
-
-
-CMD ["node", "index.js"]

@@ -19,7 +19,7 @@ processes = []
 # The command below is used to launch a Rails server; be sure to
 # replace with the command you're using to launch your server.
 web = "node index.js"
-cron = "supercronic /app/crontab"
+cron = "supercronic crontab"
 
 [[services]]
   http_checks = []
