@@ -23,7 +23,10 @@ app.get("/", (req, res) => res.send("ok!!!!"));
 app.post("/login", login);
 app.get("/img/*", img_proxy_cache, img_speed_limiter, img_proxy);
 app.get("/proxy-img/*", img_download);
-app.get("/scrap", scrap);
+app.get("/scrap", () => {
+  scrap();
+  res.send("scrapping");
+});
 
 const server = new ApolloServer({
   typeDefs,
