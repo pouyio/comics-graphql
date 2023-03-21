@@ -11,7 +11,6 @@ const {
   img_download,
   img_speed_limiter,
 } = require("./img");
-const { scrap } = require("../scrapper/index");
 
 const app = express();
 
@@ -23,10 +22,6 @@ app.get("/", (req, res) => res.send("ok!!!!"));
 app.post("/login", login);
 app.get("/img/*", img_proxy_cache, img_speed_limiter, img_proxy);
 app.get("/proxy-img/*", img_download);
-app.get("/scrap/*", (req, res) => {
-  scrap();
-  res.send("scrapping");
-});
 
 const server = new ApolloServer({
   typeDefs,

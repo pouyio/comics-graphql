@@ -1,8 +1,6 @@
 const cron = require("node-cron");
-// const { scrap } = require("./index");
+const { scrap } = require("./index");
 
-cron.schedule(`*/1 * * * *`, async () => {
-  console.log("running your task...");
+cron.schedule(`0 17 * * *`, async () => {
+  scrap();
 });
-
-// scrap();

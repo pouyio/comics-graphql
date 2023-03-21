@@ -15,16 +15,10 @@ processes = []
   allowed_public_ports = []
   auto_rollback = true
 
-[processes]
-# The command below is used to launch a Rails server; be sure to
-# replace with the command you're using to launch your server.
-web = "node index.js"
-cron = "supercronic crontab"
-
 [[services]]
   http_checks = []
   internal_port = 8080
-  processes = ["web"]
+  processes = ["app"]
   protocol = "tcp"
   script_checks = []
   [services.concurrency]
