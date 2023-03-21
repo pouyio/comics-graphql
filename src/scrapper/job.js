@@ -1,6 +1,7 @@
+require("dotenv").load();
 const cron = require("node-cron");
 const { scrap } = require("./index");
 
-cron.schedule(`0 17 * * *`, async () => {
+cron.schedule(`13 21 * * *`, async () => {
   scrap();
 });
